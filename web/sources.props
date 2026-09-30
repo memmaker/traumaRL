@@ -315,8 +315,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)shim/*.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/libtcod-net/libtcodWrapper/Enumerations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/libtcod-net/libtcodWrapper/TCODColor.cs" />
-    <Reference Include="QuickGraph"><HintPath>$(MSBuildThisFileDirectory)../RogueBasin/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.dll</HintPath></Reference>
-    <Reference Include="QuickGraph.Graphviz"><HintPath>$(MSBuildThisFileDirectory)../RogueBasin/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.Graphviz.dll</HintPath></Reference>
+    <PackageReference Include="QuikGraph" Version="2.5.0" />
+    <PackageReference Include="QuikGraph.Graphviz" Version="2.5.0" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/bin/Debug/*.txt" Exclude="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/bin/Debug/profiling results.txt" LogicalName="RogueBasin.bin.Debug.%(Filename)%(Extension)" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/bin/Debug/movies/*" LogicalName="RogueBasin.bin.Debug.movies.%(Filename)%(Extension)" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/bin/Debug/logentries/*" LogicalName="RogueBasin.bin.Debug.logentries.%(Filename)%(Extension)" />

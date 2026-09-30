@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GraphMap;
 using System.Collections.Generic;
-using QuickGraph;
+using QuikGraph;
 using System.Linq;
 
 namespace TestGraphMap

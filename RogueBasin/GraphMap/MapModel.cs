@@ -1,7 +1,7 @@
-﻿using QuickGraph;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Graphviz;
-using QuickGraph.Algorithms;
+﻿using QuikGraph;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Graphviz;
+using QuikGraph.Algorithms;
 using System;
 using System.Collections.Generic;
 using System.Linq;

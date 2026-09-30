@@ -1,6 +1,6 @@
 ﻿using System;
-using QuickGraph;
-using QuickGraph.Graphviz;
+using QuikGraph;
+using QuikGraph.Graphviz;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -81,7 +81,7 @@ namespace GraphMap
         private void graphviz_FormatDoorVertex(object sender, FormatVertexEventArgs<int> e)
         {
             //Output door id
-            var vertexFormattor = e.VertexFormatter;
+            var vertexFormattor = e.VertexFormat;
             int vertexNo = e.Vertex;
 
             var door = model.DoorAndClueManager.GetLockIdByIndex(vertexNo);
@@ -94,7 +94,7 @@ namespace GraphMap
             //Take tag from TaggedEdge and add as label on edge in serialized view
 
             TaggedEdge<int, string> edge = e.Edge;
-            var edgeFormattor = e.EdgeFormatter;
+            var edgeFormattor = e.EdgeFormat;
 
             //If there is a door on this edge, override with this tag
 
@@ -110,7 +110,7 @@ namespace GraphMap
             }
                 
 
-            edgeFormattor.Label = new QuickGraph.Graphviz.Dot.GraphvizEdgeLabel();
+            edgeFormattor.Label = new QuikGraph.Graphviz.Dot.GraphvizEdgeLabel();
             edgeFormattor.Label.Value = edgeTag;
 
         }
@@ -120,7 +120,7 @@ namespace GraphMap
             //Take tag from TaggedEdge and add as label on edge in serialized view
 
             TaggedEdge<int, string> edge = e.Edge;
-            var edgeFormattor = e.EdgeFormatter;
+            var edgeFormattor = e.EdgeFormat;
 
             //If there is a door on this edge, override with this tag
 
@@ -137,7 +137,7 @@ namespace GraphMap
             if(edgeTag.Length > 0)
                 edgeTag = edgeTag.Substring(0, edgeTag.Length - 1);
                         
-            edgeFormattor.Label = new QuickGraph.Graphviz.Dot.GraphvizEdgeLabel();
+            edgeFormattor.Label = new QuikGraph.Graphviz.Dot.GraphvizEdgeLabel();
             edgeFormattor.Label.Value = edgeTag;
 
         }
@@ -147,7 +147,7 @@ namespace GraphMap
             //(If nothing is included here, having this here allows default behaviour for serializer (add labels))
 
             //Use formattor explicitally
-            var vertexFormattor = e.VertexFormatter;
+            var vertexFormattor = e.VertexFormat;
             int vertexNo = e.Vertex;
 
             string vertexLabel = vertexNo.ToString();
@@ -172,7 +172,7 @@ namespace GraphMap
             //(If nothing is included here, having this here allows default behaviour for serializer (add labels))
 
             //Use formattor explicitally
-            var vertexFormattor = e.VertexFormatter;
+            var vertexFormattor = e.VertexFormat;
             int vertexNo = e.Vertex;
 
             string vertexLabel = vertexNo.ToString();

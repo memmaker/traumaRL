@@ -275,7 +275,7 @@ namespace RogueBasin
     sealed class CollectionSurrogate : ISerializationSurrogate
     {
         public static readonly CollectionSurrogate Instance = new CollectionSurrogate();
-        /// The HashSet<>/Dictionary<,>/SortedDictionary<,> this type is or derives from (QuickGraph's VertexEdgeDictionary does).
+        /// The HashSet<>/Dictionary<,>/SortedDictionary<,> this type is or derives from (QuikGraph's VertexEdgeDictionary does).
         internal static Type Base(Type t)
         {
             for (; t != null && t != typeof(object); t = t.BaseType)

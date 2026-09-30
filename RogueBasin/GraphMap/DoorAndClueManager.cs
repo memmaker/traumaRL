@@ -1,6 +1,6 @@
-﻿using QuickGraph;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms;
+﻿using QuikGraph;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -551,7 +551,7 @@ namespace GraphMap
                 var dependencyParentIndex = GetLockIndexById(dependencyParentDoorId);
                 var dependentDoorIndex = GetLockIndexById(dependentDoorId);
 
-                QuickGraph.Edge<int> depEdge;
+                QuikGraph.Edge<int> depEdge;
                 lockDependencyGraph.TryGetEdge(dependencyParentIndex, dependentDoorIndex, out depEdge);
                 if (depEdge == null)
                 {

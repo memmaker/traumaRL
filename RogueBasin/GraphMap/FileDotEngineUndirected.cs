@@ -1,5 +1,5 @@
-﻿using QuickGraph.Graphviz;
-using QuickGraph.Graphviz.Dot;
+﻿using QuikGraph.Graphviz;
+using QuikGraph.Graphviz.Dot;
 using System;
 using System.Collections.Generic;
 using System.IO;

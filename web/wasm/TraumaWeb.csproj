@@ -17,14 +17,18 @@
     <NoWarn>$(NoWarn);CS0162;CS0168;CS0219;CS0414;CS0649;CS0169;CS0618;CS0108;CS0114;NU1701;CS8981;SYSLIB0011;SYSLIB0050;SYSLIB0051;CA1416;CS0659;CS0661;CS0660;CS1998;CS0067;CA2200</NoWarn>
     <StartupObject>RogueBasin.WebMain</StartupObject>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <!-- no trimming: ILLink 10 crashes (IL1012, KeyNotFound in CompilerGeneratedState) analysing QuickGraph net4 FibonacciHeap iterators -->
-    <PublishTrimmed>false</PublishTrimmed>
+    <!-- trim the framework only (partial): the game and QuikGraph are kept whole (reflection saves).
+         QuikGraph (netstandard fork) replaces QuickGraph 3.6 net4, whose iterators crash ILLink 10 (IL1012). -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
     <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
     <WasmEnableThreads>false</WasmEnableThreads>
     <CompressionEnabled>false</CompressionEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <Import Project="../sources.props" />
+  <!-- BinaryFormatter loads these facades by name (type names in saves) -->
+  <ItemGroup><TrimmerRootAssembly Include="mscorlib" /><TrimmerRootAssembly Include="System" /><TrimmerRootAssembly Include="System.Core" /><TrimmerRootAssembly Include="System.Collections" /></ItemGroup>
   <ItemGroup>
     <Compile Include="WebBackend.cs" />
     <EmbeddedResource Include="../config.txt" LogicalName="data/config.txt" />

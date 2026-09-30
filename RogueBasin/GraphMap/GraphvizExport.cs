@@ -1,5 +1,5 @@
-﻿using QuickGraph;
-using QuickGraph.Graphviz;
+﻿using QuikGraph;
+using QuikGraph.Graphviz;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,10 +30,10 @@ namespace GraphMap
             //Take tag from TaggedEdge and add as label on edge in serialized view
 
             TaggedEdge<int, string> edge = e.Edge;
-            var edgeFormattor = e.EdgeFormatter;
+            var edgeFormattor = e.EdgeFormat;
 
             string edgeTag = edge.Tag;
-            edgeFormattor.Label = new QuickGraph.Graphviz.Dot.GraphvizEdgeLabel();
+            edgeFormattor.Label = new QuikGraph.Graphviz.Dot.GraphvizEdgeLabel();
             edgeFormattor.Label.Value = edgeTag;
 
         }
@@ -43,7 +43,7 @@ namespace GraphMap
             //(If nothing is included here, having this here allows default behaviour for serializer (add labels))
 
             //Use formattor explicitally
-            var vertexFormattor = e.VertexFormatter;
+            var vertexFormattor = e.VertexFormat;
             int vertexNo = e.Vertex;
 
             vertexFormattor.Label = String.Format("{0}", vertexNo);
