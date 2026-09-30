@@ -3,7 +3,21 @@
 ## RVIP progress
 
 - **Stage 1 (Get + build): done.**
-- **Stage 5 (Web page and windows): done in the cloud, final check pending locally.** Next: **stage 6**.
+- **Stage 6 (Docs and sound): done in the cloud.** Next: stage 7.
+  - Help: `web/make-help.py` (self-contained, no Docs folder) → `dist/help.html`: key list parsed from
+    `movies/helpkeys0.amf` (the in-game `?` movie, now also lists `Enter` command menu and `i` inventory menu),
+    intro from `qe_start*.amf`, saving/tips/browser/credits written here. Shift+F marked "no effect in the browser".
+    Credits: flend (Tom Ford), 7DRL 2014, art ShroomArts (RogueBasin page); GPL v3 code, proprietary graphics.
+  - Sound: search (web, 2026-09) found no sound/music released for TraumaRL (7DRL; repo ships none), so
+    `web/make-sounds.py` synthesizes `dist/sound/*.wav` at build time (Forays approach). No music, no Music toggle.
+    C# `RvipInput.Sound(name)` → `IRvipBackend.Sound` → worker `{t:'sound'}` → page `RVIPSound.play` if Audio ▾ →
+    Sound effects is on (off by default; choice kept in `web-layout.json` `sound`). Hooks: `Player.ApplyDamageToMonster`
+    hit/miss, `ApplyDamageToPlayer` hurt, `Dungeon.KillMonster` kill (any monster death), `Player.PickUpItem` pickup,
+    `RogueBase.FireTargettedWeapon` fire, `Elevator.PlayerInteraction` elevator, `Dungeon.EndOfGame` death/win.
+    Native: `SOUNDS=1` prints `SOUND name`.
+  - Tested (Chromium): help loads (keys incl. Enter/i), no sound requests while off, real click on the checkbox →
+    `2 f Enter` fires at the camera → fire/hit/kill/pickup wavs fetched, setting survives reload, no console errors.
+- **Stage 5 (Web page and windows): done in the cloud, final check pending locally.**
   - Page: `web/index.html` + `web/trauma.js` on `../rvip-wm.js` / `../rvip-app.js` (Forays
     template). Windows: Map (the only canvas), Status, Messages, Inventory; one-window mode =
     the game's whole 60×35 screen on the map canvas. Menus (Enter, `i`) = `RvipWM.popup`
@@ -56,7 +70,7 @@
     may be older), look in the pane (drag dividers, one-window mode, a movie/end screen), then
     `web/build.sh`, commit + push, `web/deploy.sh` (web name `traumarl`,
     `/var/www/ruzzoli.de/roguelikes/traumarl/`), check live with `curl` + md5 vs `web/dist`.
-  - Open: saves are slow (5–8 s freeze; a faster hand-written format would fix it); no help.html yet (Help shows a fallback, stage 6); no Visible
+  - Open: saves are slow (5–8 s freeze; a faster hand-written format would fix it); no Visible
     window (the game has no such list); the map viewport stays the game's 37×27 (bigger windows
     show black around it). Enlarging `ViewableWidth/Height` from the page was looked at and skipped
     (not cheap): the map lives inside the fixed 60×45 cell buffer (`WebRenderer.Cols/Rows`) next to
