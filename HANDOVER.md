@@ -2,6 +2,28 @@
 
 ## RVIP progress
 
+- **Local finish (Mac): done and deployed.** All stages 1–9 are live at https://ruzzoli.de/roguelikes/traumarl/.
+  - Map view follows the Map window: page key `RvipView w,h` (cells that fit at the current zoom; 37×27 in
+    one-window mode) → `Screen.RvipSetView` moves the map to x=61 (right of the 60-col screen), renderer buffer
+    `MapRendererSDLDotNet.Resize` grows; JSON `stride` = buffer width. Status pane is not rebuilt while `full`.
+  - Saves: `Map.RvipPack` was never wired; now Map packs squares (long + SoundMag) in OnSerializing/OnDeserialized,
+    old saves are rejected ("old save format"). wasm save ~1.2 s (was 3–8 s), native 289 ms. Page autosaves every 5 min.
+  - Trimming: QuikGraph 2.5 (NuGet, netstandard) replaces QuickGraph 3.6 net4 (namespace sed + `EdgeFormat`/`VertexFormat`).
+    `TrimMode=partial`, roots `mscorlib`, `System`, `System.Core`, `System.Collections` (BinaryFormatter loads by name).
+    dist 25 → 8.9 MB. The VS2013 csprojs still reference QuickGraph (unused, not built).
+  - `?rviplocks` never worked (WebMain appended a blank line → Config stopped parsing; Shift+K only in DebugMode). Fixed;
+    flag now allows Shift+K locks, V reveal map (also marks SeenByPlayer), C heal, U all weapons.
+  - `<`/`>` plan through closed doors; `>` walks to a known escape pod.
+  - `window.prompt` for the name kept (rogue5.4, prime, tggw do the same; rvip-app.js has no helper); a throwing prompt
+    (embedded browsers) now means no name instead of a hung page.
+  - Intro movies (`qe_start`, `helpkeys`) never play upstream either (`ShowIntroMovies` runs after `Events.Run`, which never returns).
+  - Tested (headless Chromium, `?rviplocks`): real death (elevator Medical→Lower Atrium, killer Swarmer) and real win (→ Flight deck,
+    escape pod), sounds hit/hurt/kill/elevator/pickup/death/win, beacon `ev=death|win` in outbox; pane: layout, zoom 16–64 resizes
+    view, one-window, Enter/`i` menus, `?` movie, resume. smoke/resize pass (smoke's 5 s wait can miss a fresh 6 s generation);
+    idbtest is Emscripten-only (n/a). Shrine OK at 375 px.
+  - Arrow keys scroll the view (upstream); movement is numpad/vi keys.
+
+
 - **Stage 9 (Graveyard and leaderboard): done in the cloud, deploy pending locally.**
   - Hook: `Dungeon.EndOfGame(won, quit)` (every end: death via `PlayerDeath`, quit via `Q`→y, win via
     `Features.EscapePod.PlayerInteraction`) calls `RvipInput.Beacon` before the end screens' key waits.
