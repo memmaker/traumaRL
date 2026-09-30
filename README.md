@@ -2,7 +2,7 @@
 
 Web port of **TraumaRL** (flend / Tom Ford, 7DRL 2014), upstream
 [flend/roguelike, branch `traumarl` @ `d429380`](https://github.com/flend/roguelike/tree/d4293808).
-Our changes: https://github.com/memmaker/traumaRL/compare/d429380...main
+Our changes: https://github.com/memmaker/traumaRL/compare/d429380...traumarl
 Play: https://ruzzoli.de/roguelikes/traumarl/
 
 - Build: `sh web/build.sh` → `web/dist` (.NET 10 SDK, browser-wasm; see `web/toolchain.sh`).
