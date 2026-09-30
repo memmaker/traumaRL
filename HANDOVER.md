@@ -3,7 +3,33 @@
 ## RVIP progress
 
 - **Stage 1 (Get + build): done.**
-- **Stage 3 (Enter menu + item menus): done.** Next: **stage 4**.
+- **Stage 4 (Tiles): done.** Next: **stage 5**.
+  - Set: the game's own `RogueBasin/TraumaRL/bin/Debug/TraumaSprites.png` (256×768,
+    16×16, 16 per row), copied unchanged into `web/dist` by `build.sh`; the only set,
+    never mixed. Rows 0–15 = CP437 font glyphs (ids < 256), rows 16+ = pictures
+    (ids ≥ 256). README: the graphics are the author's and not for *other*
+    projects; shipping them with this port of the same game is within that.
+  - Tile per cell decided in C#: sprite id = `MapObject.Representation` /
+    `StringEquivalent.TerrainChars` via Screen.cs tile layers → `WebRenderer.cs`
+    (4 layers of id, fg, bg). Page recolours (white → fg, magenta → bg) and draws.
+  - Scale: page cell size 16 px (original) by default; A−/A+ buttons (top right)
+    step 8…64 px by 4, `drawImage` with `imageSmoothingEnabled=false`, canvas
+    backing store = cols×cell (no CSS scaling; map bigger than window scrolls).
+    TTF text runs scale with the cell. `window.trauma.zoom(d)`, `.cell`. Not
+    persisted yet (stage 5: IndexedDB).
+  - Coverage (native `COVER=1`, seed 1, full station): placed kinds 46/46 have a
+    picture sprite (19 monsters, 6 features, 18 items, 3 lock kinds; player 256);
+    terrain 43/45 pictures, `Void` (176 ░) and `NonWalkableFeature` (250 ·) are the
+    sheet's own CP437 glyphs by design. All 119 constructible Monster/Item/Feature
+    types: 46 pictures; the 73 glyph-only ones are legacy RogueBasin kinds (orcs,
+    staircases, potions…) TraumaRL never places. → 100 % of what the game shows.
+  - No text mode: the game has no ASCII alternative for its picture sprites
+    (Representation *is* the sprite id), so a text/None option would need guessed
+    glyphs (rule 8). Tiles button not offered.
+  - Shots: `web/shots/tiles16.png`, `tiles24.png` (sprites crisp at cell size).
+  - Open: zoom not persisted; text runs (status panel) are still canvas text
+    (stage 5 panes).
+- **Stage 3 (Enter menu + item menus): done.**
   - File `RogueBasin/RogueBasin/RvipMenu.cs` (partial `RogueBase`, in `DDRogue.csproj`
     and `web/sources.props`). Hook: `RvipMenuKey(ref args)` in `KeyboardEventHandler`
     before `ProcessKeypress`, `RvipAfterCommand()` right after it.

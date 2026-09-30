@@ -6,8 +6,10 @@
 <title>TraumaRL</title>
 <link rel="icon" href="data:,">
 <style>
-	html, body { margin: 0; background: #000; color: #ccc; font: 14px sans-serif; }
-	#screen { display: block; margin: 8px auto; image-rendering: pixelated; max-width: 100%; }
+	html, body { margin: 0; overflow: auto; background: #000; color: #ccc; font: 14px sans-serif; }
+	#screen { display: block; margin: 8px auto; image-rendering: pixelated; }
+	#bar { position: fixed; top: 4px; right: 4px; font: 13px sans-serif; }
+	#bar button { background: #223; color: #ccc; border: 1px solid #556; cursor: pointer; }
 	#status { text-align: center; padding: 6px; }
 	#menu { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); max-height: 100vh; overflow: auto;
 		background: #101018; border: 1px solid #889; font: 16px monospace; white-space: pre; padding: 0 1ch; color: #ccc; }
@@ -18,6 +20,7 @@
 </style>
 </head>
 <body>
+<div id="bar"><button id="aminus" title="Smaller map cells">A−</button> <span id="zoom">16 px</span> <button id="aplus" title="Bigger map cells">A+</button></div>
 <div id="status">Loading TraumaRL…</div>
 <canvas id="screen" width="960" height="720"></canvas>
 <div id="menu" hidden></div>

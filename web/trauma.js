@@ -6,11 +6,14 @@
  * TraumaSprites.png (white -> fg, magenta -> bg/transparent, as the SDL build
  * did) and forwards keys. No storage yet (stage 1).
  */
-const SLOT = 48, NSLOT = 64, SPR = 16;
+const SLOT = 48, NSLOT = 64, SPR = 16;   /* sheet sprite size: TraumaSprites.png as shipped, never pre-scaled */
+/* map cell size in screen px: A-/A+ step it by 4 px; sprites are scaled at draw time, nearest-neighbour */
+const CELL_MIN = 8, CELL_MAX = 64, CELL_STEP = 4;
+let cell = SPR;
 const $ = id => document.getElementById(id);
 let worker, ring, scr = null, info = { texts: [] }, dirty = false, sheet, sheetData;
 const cache = new Map();
-window.trauma = { running: false, text, get info() { return info; }, get cells() { return scr; } };
+window.trauma = { running: false, text, zoom, get cell() { return cell; }, get info() { return info; }, get cells() { return scr; } };
 
 /* ---------- cross-origin isolation (SharedArrayBuffer) ---------- */
 async function isolate() {
@@ -67,15 +70,20 @@ function draw() {
 	dirty = false;
 	if (!scr || !sheetData) return;
 	const cv = $('screen'), g = cv.getContext('2d'), C = info.cols, R = info.rows, S = 1 + info.layers * 3;
-	if (cv.width !== C * SPR) { cv.width = C * SPR; cv.height = R * SPR; }
+	if (cv.width !== C * cell || cv.height !== R * cell) { cv.width = C * cell; cv.height = R * cell; }
 	g.imageSmoothingEnabled = false;
 	g.fillStyle = '#000'; g.fillRect(0, 0, cv.width, cv.height);
 	for (let y = 0; y < R; y++) for (let x = 0; x < C; x++) {
 		const o = (x + y * C) * S, n = scr[o];
-		for (let l = 0; l < n; l++) { const p = o + 1 + l * 3; g.drawImage(sprite(scr[p], scr[p + 1], scr[p + 2]), x * SPR, y * SPR); }
+		for (let l = 0; l < n; l++) { const p = o + 1 + l * 3; g.drawImage(sprite(scr[p], scr[p + 1], scr[p + 2]), x * cell, y * cell, cell, cell); }
 	}
-	g.font = '18px alexis, monospace'; g.textBaseline = 'top';
-	for (const [x, y, rgb, s] of info.texts) { g.fillStyle = '#' + rgb.toString(16).padStart(6, '0'); g.fillText(s, x * SPR, y * SPR - 1); }
+	g.font = Math.round(cell * 18 / SPR) + 'px alexis, monospace'; g.textBaseline = 'top';
+	for (const [x, y, rgb, s] of info.texts) { g.fillStyle = '#' + rgb.toString(16).padStart(6, '0'); g.fillText(s, x * cell, y * cell - cell / SPR); }
+}
+function zoom(d) {
+	cell = Math.max(CELL_MIN, Math.min(CELL_MAX, cell + d * CELL_STEP));
+	$('zoom').textContent = cell + ' px';
+	if (!dirty) { dirty = true; requestAnimationFrame(draw); }
 }
 /* text shadow for tests: top sprite as ASCII (ids < 127 are glyphs) plus the text runs */
 function text() {
@@ -115,6 +123,7 @@ function menu(m) {
 }
 
 async function main() {
+	for (const [id, d] of [['aminus', -1], ['aplus', 1]]) { const b = $(id); b.onclick = () => zoom(d); b.onmousedown = e => e.preventDefault(); b.tabIndex = -1; }
 	if (!await isolate()) { $('status').textContent = 'This browser cannot isolate the page (SharedArrayBuffer): the game cannot run.'; return; }
 	sheet = new Image(); sheet.src = 'TraumaSprites.png';
 	await sheet.decode();

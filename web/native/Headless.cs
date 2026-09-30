@@ -39,7 +39,33 @@ namespace RogueBasin{
 		public void Present(int[] cells, string info){
 			if(Environment.GetEnvironmentVariable("NOMON") != null && Game.Dungeon?.Monsters != null) { Game.Dungeon.Monsters.Clear(); Game.Dungeon.AllLocksOpen = Environment.GetEnvironmentVariable("OPEN") != null; } // explore test: no monster stops
 			if(Environment.GetEnvironmentVariable("MSGS") != null){ int i = info.IndexOf("[2,1,"); string m = i < 0 ? "" : info.Substring(i); if(m != lastMsg && m != ""){ Console.WriteLine("MSG " + (Game.Dungeon?.Player?.LocationMap) + " " + m); } lastMsg = m; }
-			last = (int[])cells.Clone(); lastInfo = info; presents++; }
+			last = (int[])cells.Clone(); lastInfo = info; presents++;
+			if(Environment.GetEnvironmentVariable("COVER") != null && Game.Dungeon?.Player != null) Cover(); }
+		/// RVIP stage 4: sprite coverage. Sprite id = Representation (a char); ids < 256 are the sheet's CP437 glyph rows,
+		/// >= 256 are pictures. Counts distinct kinds placed in the generated station, and every concrete Monster/Item/Feature
+		/// type with a parameterless constructor.
+		void Cover(){
+			var placed = new SortedDictionary<string,int>();
+			void Add(object o, int id){ placed[(o is MapObject mo ? mo.GetType().Namespace + "." : "") + o.GetType().Name] = id; }
+			foreach(var m in Game.Dungeon.Monsters) Add(m, m.Representation);
+			foreach(var i in Game.Dungeon.Items) Add(i, i.Representation);
+			foreach(var f in Game.Dungeon.Features) Add(f, f.Representation);
+			foreach(var kv in Game.Dungeon.Locks) foreach(var l in kv.Value) Add(l, l.Representation);
+			var terr = new SortedDictionary<string,int>();
+			foreach(var lv in Game.Dungeon.Levels) for(int x = 0; x < lv.width; x++) for(int y = 0; y < lv.height; y++){ var t = lv.mapSquares[x, y].Terrain; terr["terrain." + t] = StringEquivalent.TerrainChars[t]; }
+			int Pic(IDictionary<string,int> d) => d.Values.Count(v => v >= 256);
+			Console.WriteLine("placed kinds " + placed.Count + " picture " + Pic(placed));
+			foreach(var kv in placed) Console.WriteLine("  " + (kv.Value >= 256 ? "pic " : "GLYPH ") + kv.Value + " " + kv.Key);
+			Console.WriteLine("terrain kinds " + terr.Count + " picture " + Pic(terr));
+			foreach(var kv in terr) Console.WriteLine("  " + (kv.Value >= 256 ? "pic " : "glyph ") + kv.Value + " " + kv.Key);
+			var all = new SortedDictionary<string,int>(); int noctor = 0;
+			foreach(var t in typeof(Monster).Assembly.GetTypes().Concat(typeof(TraumaRL.RvipEntry).Assembly.GetTypes()))
+				if(!t.IsAbstract && (typeof(Monster).IsAssignableFrom(t) || typeof(Item).IsAssignableFrom(t) || typeof(Feature).IsAssignableFrom(t)))
+					try{ var o = (MapObject)Activator.CreateInstance(t); all[t.Namespace + "." + t.Name] = o.Representation; } catch { noctor++; }
+			Console.WriteLine("all types " + all.Count + " picture " + Pic(all) + " (no default ctor " + noctor + ")");
+			foreach(var kv in all) if(kv.Value < 256) Console.WriteLine("  GLYPH " + kv.Value + " '" + (char)kv.Value + "' " + kv.Key);
+			Finish(0);
+		}
 		public void Quit(){ Finish(0); }
 		public void Finish(int rc){
 			Console.WriteLine("presents " + presents + " rc " + rc + (Game.Dungeon != null && Game.Dungeon.Player != null ? " level " + Game.Dungeon.Player.LocationLevel + " at " + Game.Dungeon.Player.LocationMap + " hp " + Game.Dungeon.Player.Hitpoints : ""));
