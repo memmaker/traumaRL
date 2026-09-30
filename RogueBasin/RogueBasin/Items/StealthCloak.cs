@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class StealthCloak : Item, IEquippableItem
+    [System.Serializable] public class StealthCloak : Item, IEquippableItem
     {
  
         /// <summary>

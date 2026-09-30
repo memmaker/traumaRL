@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace TraumaRL
 {
 
-    class TraumaRunner
+    [System.Serializable] class TraumaRunner
     {
         RogueBase rb;
 
@@ -20,6 +20,15 @@ namespace TraumaRL
             StandardSystemSetup();
 
             IntroScreen();
+
+            //RVIP: resume the saved run (one slot)
+            if (RvipSave.Exists && RvipSave.Load())
+            {
+                rb.RvipResumed();
+                Game.MessageQueue.AddMessage("Welcome back, Private " + Game.Dungeon.Player.Name + ".");
+                rb.StartEventLoop();
+                return;
+            }
 
             //For testing
             bool retry = false;
@@ -40,6 +49,7 @@ namespace TraumaRL
                 {
                     retry = false;
                     LogFile.Log.LogEntryDebug("Failed to create dungeon : " + ex.Message, LogDebugLevel.High);
+                    System.Console.Error.WriteLine("RVIP gen retry: " + ex);
                     if (failFast)
                     {
                         throw ex;

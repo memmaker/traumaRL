@@ -6,7 +6,7 @@ using libtcodWrapper;
 namespace RogueBasin.Creatures
 {
 
-    public class HeavyBotRanged : MonsterThrowAndRunAI
+    [System.Serializable] public class HeavyBotRanged : MonsterThrowAndRunAI
     {
         public HeavyBotRanged()
         {

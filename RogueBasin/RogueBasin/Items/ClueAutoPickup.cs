@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class ClueAutoPickup : Clue
+    [System.Serializable] public class ClueAutoPickup : Clue
     {
 
         public ClueAutoPickup(GraphMap.Clue mapClue) : base(mapClue)

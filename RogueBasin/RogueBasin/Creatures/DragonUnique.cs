@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Medium threat. Fast but weak missile.
     /// </summary>
-    public class DragonUnique : MonsterSpecialAI
+    [System.Serializable] public class DragonUnique : MonsterSpecialAI
     {
         const int classDeltaHitpoints = 20;
         const int classMinHitpoints = 30;

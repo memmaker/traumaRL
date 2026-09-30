@@ -8,7 +8,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// Magic library
     /// </summary>
-    public class Mission6Entry : DungeonSquareTrigger
+    [System.Serializable] public class Mission6Entry : DungeonSquareTrigger
     {
 
         public Mission6Entry()

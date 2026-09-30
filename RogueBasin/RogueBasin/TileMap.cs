@@ -5,7 +5,7 @@ using RogueBasin;
 
 namespace TileEngine
 {
-    class TileRow
+    [System.Serializable] class TileRow
     {
         List<TileCell> columns;
 
@@ -48,7 +48,7 @@ namespace TileEngine
         }
     }
 
-    class TileLayer
+    [System.Serializable] class TileLayer
     {
         List<TileRow> rows;
 
@@ -110,7 +110,7 @@ namespace TileEngine
     /// Consists of layers, each layer consisting of the same dimensions.
     /// Each layer is 2d rows and columns
     /// </summary>
-    class TileMap
+    [System.Serializable] class TileMap
     {
         List<TileLayer> layers;
 

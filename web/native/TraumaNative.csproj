@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- RVIP headless native test (ASan substitute): same sources as web/wasm, scripted keys, text dump. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>RogueBasin</RootNamespace>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NoWarn>$(NoWarn);CS0162;CS0168;CS0219;CS0414;CS0649;CS0169;CS0618;CS0108;CS0114;NU1701;CS8981;SYSLIB0011;SYSLIB0050;SYSLIB0051;CA1416;CS0659;CS0661;CS0660;CS1998;CS0067;CA2200</NoWarn>
+    <StartupObject>RogueBasin.HeadlessMain</StartupObject>
+  </PropertyGroup>
+  <Import Project="../sources.props" />
+  <ItemGroup>
+    <Compile Include="Headless.cs" />
+    <None Include="../config.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

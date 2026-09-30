@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Tough mid range demon
     /// </summary>
-    public class Peon : MonsterFightAndRunAI
+    [System.Serializable] public class Peon : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 10;
         const int classMinHitpoints = 5;

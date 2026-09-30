@@ -8,7 +8,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// Magic library
     /// </summary>
-    public class FirstLevelEntry : DungeonSquareTrigger
+    [System.Serializable] public class FirstLevelEntry : DungeonSquareTrigger
     {
 
         public FirstLevelEntry()

@@ -8,7 +8,7 @@ namespace RogueBasin.Spells
     /// <summary>
     /// Teleports to a nearby location
     /// </summary>
-    public class Blink : Spell
+    [System.Serializable] public class Blink : Spell
     {
         int spellRange = 5;
 

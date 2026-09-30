@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class BioProtect : PlayerEffectNoDuration
+    [System.Serializable] public class BioProtect : PlayerEffectNoDuration
     {
 
         //public bool sightZeroCase  { get; set; }

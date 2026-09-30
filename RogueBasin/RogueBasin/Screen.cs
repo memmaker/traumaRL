@@ -15,7 +15,7 @@ namespace RogueBasin {
     /// Is not serialized, so should not contain any game state.
     /// Contains a bit of state about overlay screens etc.
     /// </summary>
-    public class Screen
+    [System.Serializable] public class Screen
     {
         public enum TileLevel {
             Terrain = 0,
@@ -290,6 +290,11 @@ namespace RogueBasin {
 
             NeedsUpdate = true;
         }
+
+        //RVIP stage 5: the screen areas the web page shows as its own windows (map viewport, stats panel inside its frame, message rows)
+        public System.Drawing.Rectangle RvipMapRect { get { return new System.Drawing.Rectangle(mapTopLeftBase.x, mapTopLeftBase.y, mapBotRightBase.x - mapTopLeftBase.x + 1, mapBotRightBase.y - mapTopLeftBase.y + 1); } }
+        public System.Drawing.Rectangle RvipStatsRect { get { return new System.Drawing.Rectangle(statsDisplayTopLeft.x + 1, statsDisplayTopLeft.y, statsDisplayBotRight.x - statsDisplayTopLeft.x, statsDisplayBotRight.y - statsDisplayTopLeft.y + 1); } }
+        public System.Drawing.Rectangle RvipMsgRect { get { return new System.Drawing.Rectangle(msgDisplayTopLeft.x, msgDisplayTopLeft.y, msgDisplayBotRight.x - msgDisplayTopLeft.x + 1, msgDisplayNumLines); } }
 
         //Setup the screen
         public void InitialSetup()

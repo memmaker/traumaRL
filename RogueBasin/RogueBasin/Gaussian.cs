@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    public class Gaussian
+    [System.Serializable] public class Gaussian
     {
         /*
         private static bool uselast = true;

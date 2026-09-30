@@ -10,7 +10,7 @@ namespace RogueBasin.Creatures
     /// Just sits there
     /// </summary>
     /// 
-    public class ComputerNode : MonsterNullAI
+    [System.Serializable] public class ComputerNode : MonsterNullAI
     {
         bool rotationClockwise = true;
 

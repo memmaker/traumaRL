@@ -10,7 +10,7 @@ namespace RogueBasin.Creatures
     /// Won't chase. Attack at medium range.
     /// Doesn't respond to sounds
     /// </summary>
-    public class PatrolBot : MonsterThrowAndRunAI
+    [System.Serializable] public class PatrolBot : MonsterThrowAndRunAI
     {
         bool rotationClockwise = true;
 

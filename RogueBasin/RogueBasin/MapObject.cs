@@ -8,7 +8,7 @@ namespace RogueBasin
     /// <summary>
     /// Base class for any object that can be represented on the map by level & position
     /// </summary>
-    public class MapObject
+    [System.Serializable] public class MapObject
     {
         /// <summary>
         /// ASCII character

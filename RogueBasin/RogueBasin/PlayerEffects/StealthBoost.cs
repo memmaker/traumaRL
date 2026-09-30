@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class StealthBoost : PlayerEffectNoDuration
+    [System.Serializable] public class StealthBoost : PlayerEffectNoDuration
     {
 
         //public bool sightZeroCase  { get; set; }

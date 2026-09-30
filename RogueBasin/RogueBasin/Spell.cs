@@ -30,7 +30,7 @@ namespace RogueBasin
     [System.Xml.Serialization.XmlInclude(typeof(Spells.MageArmour))]
     [System.Xml.Serialization.XmlInclude(typeof(Spells.ShowItems))]
     [System.Xml.Serialization.XmlInclude(typeof(Spells.Exit))]
-    public abstract class Spell
+    [System.Serializable] public abstract class Spell
     {
         /// <summary>
         /// Has the player learnt this spell yet?

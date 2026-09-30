@@ -7,7 +7,7 @@ namespace RogueBasin
 {
 
     /** Handles all pathing queries. A friend/extension of Dungeon */
-    public class Pathing
+    [System.Serializable] public class Pathing
     {
         public enum PathingType
         {
@@ -181,7 +181,7 @@ namespace RogueBasin
             return new PathingResult(nextStep, interaction, false);
         }
 
-        public class PathingResult {
+        [System.Serializable] public class PathingResult {
             
             public Point MonsterFinalLocation { get; private set; }
             public bool MoveIsInteractionWithTarget { get; private set; }

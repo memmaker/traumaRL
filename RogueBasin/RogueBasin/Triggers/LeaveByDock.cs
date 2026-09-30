@@ -8,7 +8,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// Magic library
     /// </summary>
-    public class LeaveByDock : DungeonSquareTrigger
+    [System.Serializable] public class LeaveByDock : DungeonSquareTrigger
     {
 
         public LeaveByDock()

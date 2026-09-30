@@ -8,7 +8,7 @@ namespace RogueBasin
     /// Description of a group of objects, suitable for display to the user and selection
     /// Presumably all these objects will be more or less to the same to be in the same group
     /// </summary>
-    public class InventoryListing : IComparable
+    [System.Serializable] public class InventoryListing : IComparable
     {
         /// <summary>
         /// Parent inventory

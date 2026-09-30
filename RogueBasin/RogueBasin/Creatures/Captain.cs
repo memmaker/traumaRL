@@ -6,7 +6,7 @@ using libtcodWrapper;
 namespace RogueBasin.Creatures
 {
 
-    public class Captain : MonsterFightAndRunAI
+    [System.Serializable] public class Captain : MonsterFightAndRunAI
     {
         public Captain()
         {

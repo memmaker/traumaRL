@@ -15,7 +15,7 @@ namespace GraphMap
     /// <summary>
     /// This should be used by clients as a way of defining an edge, instead of natively using the Edge<> class
     /// </summary>
-    public sealed class Connection : Tuple<int, int>
+    [System.Serializable] public sealed class Connection : Tuple<int, int>
     {
         public int Source { get { return this.Item1; } }
         public int Target { get { return this.Item2; } }
@@ -110,7 +110,7 @@ namespace GraphMap
     }
 
     /** A locked item that is unlocked by clues and produces clues when unlocked */
-    public class Objective
+    [System.Serializable] public class Objective
     {
         public int LockIndex
         {
@@ -169,7 +169,7 @@ namespace GraphMap
     }
 
     /** A clue to open a locked door */
-    public class Clue
+    [System.Serializable] public class Clue
     {
         /// <summary>
         /// Which door this clue locks
@@ -226,7 +226,7 @@ namespace GraphMap
     /// <summary>
     /// Data carrier class to specify the requirements for a door
     /// </summary>
-    public class DoorRequirements
+    [System.Serializable] public class DoorRequirements
     {
         public Connection Location { get; private set; }
         public string Id { get; private set; }
@@ -252,7 +252,7 @@ namespace GraphMap
         }
     }
 
-    public class ObjectiveRequirements
+    [System.Serializable] public class ObjectiveRequirements
     {
         public int Vertex { get; private set; }
         public string Id { get; private set; }
@@ -282,7 +282,7 @@ namespace GraphMap
     }
 
     /** A locked door requiring one or more clues to open */
-    public class Door
+    [System.Serializable] public class Door
     {
         /// <summary>
         /// Which edge we lock on the acyclic graph
@@ -357,7 +357,7 @@ namespace GraphMap
     }
 
     /** Sets up a model of the input map and has state-changing methods */
-    public class MapModel
+    [System.Serializable] public class MapModel
     {
         /// <summary>
         /// Input map, may contain cycles
@@ -522,7 +522,7 @@ namespace GraphMap
 
 
     /** Immutable class for finding the MST of a map */
-    public class MapMST
+    [System.Serializable] public class MapMST
     {
         readonly UndirectedGraph<int, TaggedEdge<int, string>> baseGraph;
 
@@ -583,7 +583,7 @@ namespace GraphMap
     }
 
     /** Immutable one-method class used to reduce cycles from a map */
-    public class MapCycleReducer {
+    [System.Serializable] public class MapCycleReducer {
 
         readonly UndirectedGraph<int, TaggedEdge<int, string>> baseGraph;
         public bool CycleDebug { get; set; }
@@ -846,7 +846,7 @@ namespace GraphMap
     }
 
     /** Immutable one-method class used to split a map into locked / unlocked sections */
-    public class MapSplitter
+    [System.Serializable] public class MapSplitter
     {
         readonly UndirectedGraph<int, TaggedEdge<int, string>> map;
         readonly IEnumerable<TaggedEdge<int, string>> edgesToSplitOn;

@@ -8,7 +8,7 @@ namespace RogueBasin
     /// <summary>
     /// Message queue that will be presented to the user before (creatures etc.) and after (their actions) their turn
     /// </summary>
-    public class MessageQueue
+    [System.Serializable] public class MessageQueue
     {
         /// <summary>
         /// Contains a list of wrapped strings for the history. Public so serializable
@@ -31,6 +31,11 @@ namespace RogueBasin
         /// </summary>
         public bool RequireKeypress { get; set; }
 
+        public int AddedCount { get; private set; }
+
+        /// RVIP: lines ever added to messageHistory (the web Messages window sends the new ones)
+        public static int RvipHistoryAdded;
+
         public MessageQueue()
         {
             messages = new List<string>();
@@ -40,6 +45,7 @@ namespace RogueBasin
 
         public void AddMessage(string newMessage) {
             messages.Add(newMessage);
+            AddedCount++; //RVIP: auto-explore stops on new messages
         }
 
         public List<string> GetMessageHistoryAsList()
@@ -117,7 +123,7 @@ namespace RogueBasin
             foreach (string s in wrappedMsgs)
             {
                 if (s.Length > 0)
-                    messageHistory.AddLast(s.Trim());
+                { messageHistory.AddLast(s.Trim()); RvipHistoryAdded++; }
             }
 
             while (messageHistory.Count > messageHistorySize)

@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Features
 {
-    public class DockBay : DecorationFeature
+    [System.Serializable] public class DockBay : DecorationFeature
     {
         public DockBay()
         {

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin.Items
 {
-    public class StealthWare : Item, IEquippableItem
+    [System.Serializable] public class StealthWare : Item, IEquippableItem
     {
         public StealthWare()
         {

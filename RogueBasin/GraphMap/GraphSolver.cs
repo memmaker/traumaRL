@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphMap
 {
-    public class GraphSolver
+    [System.Serializable] public class GraphSolver
     {
         MapModel model;
 

@@ -7,7 +7,7 @@ using System.IO;
 
 namespace RogueBasin
 {
-    public class Config
+    [System.Serializable] public class Config
     {
         public Dictionary<string, string> Entries { get; private set; }
 

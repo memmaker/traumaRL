@@ -7,7 +7,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// When you enter the entrance square
     /// </summary>
-    public class TreasureRoom : DungeonSquareTrigger
+    [System.Serializable] public class TreasureRoom : DungeonSquareTrigger
     {
 
         public TreasureRoom()

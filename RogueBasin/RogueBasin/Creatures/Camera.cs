@@ -10,7 +10,7 @@ namespace RogueBasin.Creatures
     /// Just sits there
     /// </summary>
     /// 
-    public class Camera : MonsterNullAI
+    [System.Serializable] public class Camera : MonsterNullAI
     {
         public Camera()
         {

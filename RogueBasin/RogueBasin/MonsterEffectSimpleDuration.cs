@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// A player event with a simple ticks duration
     /// </summary>
-    public abstract class MonsterEffectSimpleDuration : MonsterEffect
+    [System.Serializable] public abstract class MonsterEffectSimpleDuration : MonsterEffect
     {
         public int currentTicks { get; set; }
 

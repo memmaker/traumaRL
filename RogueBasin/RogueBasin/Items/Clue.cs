@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class Clue : Item
+    [System.Serializable] public class Clue : Item
     {
         System.Drawing.Color color;
         string id = "";

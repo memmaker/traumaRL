@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin
 {
-    public class SerializableMap
+    [System.Serializable] public class SerializableMap
     {
         public MapSquare[] mapSquares;
         public Point PCStartLocation;
@@ -79,7 +79,7 @@ namespace RogueBasin
     /// <summary>
     /// All the members of dungeon that we need to serialize to make a save game
     /// </summary>
-    public class SaveGameInfo
+    [System.Serializable] public class SaveGameInfo
     {
         public List<SerializableMap> levels;
         public List<Monster> monsters;

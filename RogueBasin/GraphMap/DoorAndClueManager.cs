@@ -14,7 +14,7 @@ namespace GraphMap
      *  Provides utility methods for finding valid places to put clues and interrogating the
      *  clue/door dependency DAG
      */
-    public class DoorAndClueManager
+    [System.Serializable] public class DoorAndClueManager
     {
 
         readonly MapCycleReducer mapNoCycles;

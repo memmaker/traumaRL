@@ -8,7 +8,7 @@ namespace RogueBasin.SpecialMoves
     /// This is a follow-up move to a vault involving an attack as the last move. It therefore replicates wall vault and adds a new last move (may be a nicer way to do this)
     /// Note that it is not a special-movement move since the attack is in the direction of the keypress
     /// </summary>
-    public class VaultBackstab : SpecialMove
+    [System.Serializable] public class VaultBackstab : SpecialMove
     {
         //Really private, accessors for serialization only
 

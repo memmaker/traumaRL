@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin.LibTCOD
 {
-    public class TCODPathFindingWrapper : Algorithms.IPathFinder
+    [System.Serializable] public class TCODPathFindingWrapper : Algorithms.IPathFinder
     {
 
         Dictionary<int, TCODFov> levelTCODMaps;

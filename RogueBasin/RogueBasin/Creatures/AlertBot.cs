@@ -9,7 +9,7 @@ namespace RogueBasin.Creatures
     /// Fast randomly moving robot with long range. Will make a loud sound if sees player.
     /// Will not pursue or respond to sounds itself.
     /// </summary>
-    public class AlertBot : MonsterThrowAndRunAI
+    [System.Serializable] public class AlertBot : MonsterThrowAndRunAI
     {
         const int classDeltaHitpoints = 4;
         const int classMinHitpoints = 1;

@@ -10,7 +10,7 @@ namespace RogueBasin
     /// <summary>
     /// An object store. Can be on a container, creature or player
     /// </summary>
-    public class Inventory
+    [System.Serializable] public class Inventory
     {
         List<Item> items;
 

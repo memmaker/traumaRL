@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Fast
     /// </summary>
-    public class Bat : MonsterFightAndRunAI
+    [System.Serializable] public class Bat : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 4;
         const int classMinHitpoints = 4;

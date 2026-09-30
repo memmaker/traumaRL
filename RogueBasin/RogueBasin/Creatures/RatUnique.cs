@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Low threat, fights to the death. Good eyesight
     /// </summary>
-    public class RatUnique : MonsterFightAndRunAI
+    [System.Serializable] public class RatUnique : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 10;
         const int classMinHitpoints = 20;

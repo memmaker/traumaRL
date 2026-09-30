@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Medium brawler. Will run
     /// </summary>
-    public class Orc : MonsterFightAndRunAI
+    [System.Serializable] public class Orc : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 12;
         const int classMinHitpoints = 8;

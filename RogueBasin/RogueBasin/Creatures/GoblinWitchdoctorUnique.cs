@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Raiser. Stupid.
     /// </summary>
-    public class GoblinWitchdoctorUnique : MonsterSpecialAI
+    [System.Serializable] public class GoblinWitchdoctorUnique : MonsterSpecialAI
     {
         const int classDeltaHitpoints = 15;
         const int classMinHitpoints = 25;

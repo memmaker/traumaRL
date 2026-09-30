@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class MPRestore : PlayerEffectInstant
+    [System.Serializable] public class MPRestore : PlayerEffectInstant
     {
         //Strictly doesn't need to be serialized, but in just in case
         public int healingQuantity  { get; set; }

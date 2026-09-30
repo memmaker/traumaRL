@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Slow but tough
     /// </summary>
-    public class Ogre : MonsterFightAndRunAI
+    [System.Serializable] public class Ogre : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 15;
         const int classMinHitpoints = 5;

@@ -8,7 +8,7 @@ using System.Linq;
 namespace RogueBasin
 {
     /** Lightweight wrapper - stops classes uses Fov from altering the map */
-    public class WrappedFOV
+    [System.Serializable] public class WrappedFOV
     {
         TCODFovWrapper fov;
 
@@ -26,7 +26,7 @@ namespace RogueBasin
 
     /** FOV for querying. No guarantees about keeping state, so just obtain from Dungeon, use, then dispose.
      *  Not serializable */
-    public class CreatureFOV
+    [System.Serializable] public class CreatureFOV
     {
         public enum CreatureFOVType { 
             Base, Triangular, AlwaysTrue

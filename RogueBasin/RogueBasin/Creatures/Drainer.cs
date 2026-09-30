@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Slower. Quite clever missile troop
     /// </summary>
-    public class Drainer : MonsterSpecialAI
+    [System.Serializable] public class Drainer : MonsterSpecialAI
     {
         const int classDeltaHitpoints = 20;
         const int classMinHitpoints = 10;

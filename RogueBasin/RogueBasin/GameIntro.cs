@@ -9,7 +9,7 @@ namespace RogueBasin
     /// <summary>
     /// Handles showing the intro screen and getting user input
     /// </summary>
-    public class GameIntro
+    [System.Serializable] public class GameIntro
     {
         public string PlayerName { get; private set; }
         public bool ShowMovies { get; private set; }

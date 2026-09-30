@@ -7,7 +7,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// When you enter the school for the first time
     /// </summary>
-    public class SchoolEntryTrigger : DungeonSquareTrigger
+    [System.Serializable] public class SchoolEntryTrigger : DungeonSquareTrigger
     {
         public SchoolEntryTrigger()
         {

@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Medium threat. Fast but weak missile.
     /// </summary>
-    public class PixieUnique : MonsterThrowAndRunAI
+    [System.Serializable] public class PixieUnique : MonsterThrowAndRunAI
     {
         const int classDeltaHitpoints = 10;
         const int classMinHitpoints = 30;

@@ -28,7 +28,7 @@ namespace RogueBasin
     /// Fighting creatures can use this class, other more complex classes inherit off it.
     /// ProcessTurn() is currently used by all inherited classes
     /// </summary>
-    public abstract class MonsterFightAndRunAI : Monster
+    [System.Serializable] public abstract class MonsterFightAndRunAI : Monster
     {
         public SimpleAIStates AIState {get; set;}
         [XmlIgnore]

@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Creatures
 {
-    public class Whipper : MonsterThrowAndRunAI
+    [System.Serializable] public class Whipper : MonsterThrowAndRunAI
     {
         const int classDeltaHitpoints = 15;
         const int classMinHitpoints = 10;

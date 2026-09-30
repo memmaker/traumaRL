@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Tough high end demon
     /// </summary>
-    public class Overlord : MonsterFightAndRunAI
+    [System.Serializable] public class Overlord : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 15;
         const int classMinHitpoints = 35;

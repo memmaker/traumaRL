@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// A player event with a simple ticks duration
     /// </summary>
-    public abstract class ItemEffectSimpleDuration : ItemEffect
+    [System.Serializable] public abstract class ItemEffectSimpleDuration : ItemEffect
     {
         public int currentTicks { get; set; }
 

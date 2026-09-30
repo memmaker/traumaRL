@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace RogueBasin
 {
 
-    public class DoorInfo
+    [System.Serializable] public class DoorInfo
     {
         public TemplatePositioned OwnerRoom { get; private set; }
         public int DoorIndexInRoom { get; private set; }
@@ -33,7 +33,7 @@ namespace RogueBasin
     }
 
     /** Builds up a template map and connectivity graph, exposing methods for room aligned placement */
-    public class TemplatedMapGenerator
+    [System.Serializable] public class TemplatedMapGenerator
     {
     
         List<DoorInfo> potentialDoors = new List<DoorInfo>();

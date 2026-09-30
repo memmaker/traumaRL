@@ -10,7 +10,7 @@ namespace RogueBasin
     /// 
     /// Not using this base class any more. OnStart() etc. at the CreatureEffect, DungeonEffect level
     /// </summary>
-    public abstract class Effect
+    [System.Serializable] public abstract class Effect
     {
         
     }

@@ -1,0 +1,4 @@
+tilesize=16
+debug=false
+displayGraphs=false
+graphviz=none

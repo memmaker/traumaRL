@@ -9,7 +9,7 @@ namespace RogueBasin.Features
     /// </summary>
     /// <param name="player"></param>
     /// <returns></returns>
-    public class StaircaseEntry : UseableFeature
+    [System.Serializable] public class StaircaseEntry : UseableFeature
     {
         public int dungeonID;
         public int dungeonStartLevel;

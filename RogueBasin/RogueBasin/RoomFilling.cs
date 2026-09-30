@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    public class RoomFilling
+    [System.Serializable] public class RoomFilling
     {
         RoomTemplate template;
         PathingMap thisMap;

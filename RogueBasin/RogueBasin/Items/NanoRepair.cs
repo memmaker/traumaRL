@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class NanoRepair : Item, IEquippableItem
+    [System.Serializable] public class NanoRepair : Item, IEquippableItem
     {
  
         /// <summary>

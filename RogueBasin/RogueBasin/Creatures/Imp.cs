@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Blinder. Quite clever missile troop
     /// </summary>
-    public class Imp : MonsterSpecialAI
+    [System.Serializable] public class Imp : MonsterSpecialAI
     {
         const int classDeltaHitpoints = 15;
         const int classMinHitpoints = 5;

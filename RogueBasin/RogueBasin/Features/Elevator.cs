@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RogueBasin.Features
 {
-    public class Elevator : UseableFeature
+    [System.Serializable] public class Elevator : UseableFeature
     {
         int destLevel;
         Point destLocation;
@@ -26,6 +26,7 @@ namespace RogueBasin.Features
 
             Game.MessageQueue.AddMessage("You take the elevator. Welcome to " + Game.Dungeon.DungeonInfo.LevelNaming[destLevel]);
 
+            RvipInput.Sound("elevator"); //RVIP 6
             dungeon.MovePCAbsolute(destLevel, destLocation);
 
             return true;

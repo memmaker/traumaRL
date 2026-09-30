@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace RogueBasin
 {
-    public class RoomTemplate
+    [System.Serializable] public class RoomTemplate
     {
         public class PotentialDoor
         {
@@ -1241,7 +1241,7 @@ namespace RogueBasin
     }
 
     /** Loads a room / vault from disk and returns as a usuable object */
-    public class RoomTemplateLoader
+    [System.Serializable] public class RoomTemplateLoader
     {
 
         /** Loads template from a file stream. Throws exception on failure */

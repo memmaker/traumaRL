@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Medium-hard brawler. Will run
     /// </summary>
-    public class UrukUnique : MonsterFightAndRunAI
+    [System.Serializable] public class UrukUnique : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 25;
         const int classMinHitpoints = 30;

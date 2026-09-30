@@ -75,7 +75,7 @@ namespace RogueBasin
     [System.Xml.Serialization.XmlInclude(typeof(Creatures.RollingBomb))]
     [System.Xml.Serialization.XmlInclude(typeof(Creatures.Juggernaut))]
     [System.Xml.Serialization.XmlInclude(typeof(Creatures.CombatBot))]
-    public abstract class Monster : Creature, ITurnAI
+    [System.Serializable] public abstract class Monster : Creature, ITurnAI
     {
         /// <summary>
         /// Effects current active on this monster
@@ -568,6 +568,7 @@ namespace RogueBasin
 
                 var modifiedDamaged = (int)Math.Floor(player.CalculateDamageModifierForAttacksOnPlayer(this) * damage);
 
+                RvipInput.Killer = SingleDescription; //RVIP 9: beacon killer
                 player.ApplyDamageToPlayer(modifiedDamaged);
 
                 //Is the player dead, if so kill it?

@@ -8,7 +8,7 @@ namespace RogueBasin.Spells
     /// <summary>
     /// Penetrating magic attack
     /// </summary>
-    public class FireLance : Spell
+    [System.Serializable] public class FireLance : Spell
     {
 
 

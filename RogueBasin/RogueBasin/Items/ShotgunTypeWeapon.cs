@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public abstract class ShotgunTypeWeapon : RangedWeapon
+    [System.Serializable] public abstract class ShotgunTypeWeapon : RangedWeapon
     {
         public virtual double ShotgunSpreadAngle()
         {

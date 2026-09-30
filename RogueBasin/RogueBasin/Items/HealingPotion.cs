@@ -8,7 +8,7 @@ namespace RogueBasin.Items
     /// <summary>
     /// Plot item
     /// </summary>
-    public class HealingPotion : Item, IUseableItem
+    [System.Serializable] public class HealingPotion : Item, IUseableItem
     {
         bool usedUp;
 

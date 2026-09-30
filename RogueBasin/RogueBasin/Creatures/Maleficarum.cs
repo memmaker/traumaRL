@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Tough mid range demon
     /// </summary>
-    public class Maleficarum : MonsterFightAndRunAI
+    [System.Serializable] public class Maleficarum : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 15;
         const int classMinHitpoints = 25;

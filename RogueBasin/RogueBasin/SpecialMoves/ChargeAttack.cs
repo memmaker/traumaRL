@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.SpecialMoves
 {
-    public class ChargeAttack : SpecialMove
+    [System.Serializable] public class ChargeAttack : SpecialMove
     {
         //Really private, accessors for serialization only
 

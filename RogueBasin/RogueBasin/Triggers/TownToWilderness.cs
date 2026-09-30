@@ -7,7 +7,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// When you enter the entrance square
     /// </summary>
-    public class TownToWilderness : DungeonSquareTrigger
+    [System.Serializable] public class TownToWilderness : DungeonSquareTrigger
     {
 
         public bool ShownMovie = false;

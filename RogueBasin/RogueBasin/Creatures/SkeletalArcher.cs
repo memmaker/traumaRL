@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.Creatures
 {
-    public class SkeletalArcher : MonsterThrowAndRunAI
+    [System.Serializable] public class SkeletalArcher : MonsterThrowAndRunAI
     {
         const int classDeltaHitpoints = 20;
         const int classMinHitpoints = 5;

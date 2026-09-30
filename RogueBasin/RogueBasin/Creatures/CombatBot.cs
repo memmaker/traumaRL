@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Rotating then pursuing ranged bot
     /// </summary>
-    public class CombatBot : MonsterThrowAndRunAI
+    [System.Serializable] public class CombatBot : MonsterThrowAndRunAI
     {
         bool rotationClockwise = true;
 

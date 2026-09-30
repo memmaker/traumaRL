@@ -10,7 +10,7 @@ namespace RogueBasin
     /// 
     /// SoundTime is in WorldClock ticks
     /// </summary>
-    public class SoundEffect
+    [System.Serializable] public class SoundEffect
     {
         //Public for serialization
 

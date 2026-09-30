@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace RogueBasin
 {
-    public class Player : Creature
+    [System.Serializable] public class Player : Creature
     {
         /// <summary>
         /// Effects that are active on the player
@@ -1014,6 +1014,7 @@ namespace RogueBasin
         /// <returns></returns>
         public CombatResults ApplyDamageToMonster(Monster monster, int damage, bool magicUse, bool specialMove)
         {
+            RvipInput.Sound(damage > 0 ? "hit" : "miss"); //RVIP 6
             //Wake monster up etc.
             AIForMonsterIsAttacked(monster);
 
@@ -1767,6 +1768,7 @@ namespace RogueBasin
         public virtual bool PickUpItem(Item itemToPickUp)
         {
             base.PickUpItem(itemToPickUp);
+            RvipInput.Sound("pickup"); //RVIP 6
 
             if (AutoequipItem(itemToPickUp))
             {
@@ -2464,6 +2466,7 @@ namespace RogueBasin
                 //bypasses cover etc.
                 //var modifiedDamaged = (int)Math.Floor(CalculateDamageModifierForAttacksOnPlayer(this) * damage);
 
+                RvipInput.Killer = null; //RVIP 9: own damage
                 ApplyDamageToPlayer(damage);
 
                 //Hitpoints -= damage;
@@ -2616,6 +2619,7 @@ namespace RogueBasin
 
         public void ApplyDamageToPlayer(int damage)
         {
+            if (damage > 0) RvipInput.Sound("hurt"); //RVIP 6
             var remainingDamage = damage;
             int shieldAbsorbs = 0;
             int hpAbsorbs = 0;

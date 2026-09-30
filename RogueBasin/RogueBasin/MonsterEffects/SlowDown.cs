@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.MonsterEffects
 {
-    public class SlowDown : MonsterEffectSimpleDuration
+    [System.Serializable] public class SlowDown : MonsterEffectSimpleDuration
     {
         public int duration { get; set; }
 

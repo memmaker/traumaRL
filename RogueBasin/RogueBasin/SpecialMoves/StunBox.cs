@@ -8,7 +8,7 @@ namespace RogueBasin.SpecialMoves
     /// Walk in a square to cause a stun effect or similar
     /// Square directions in a clockwise fashion
     /// </summary>
-    public class StunBox : SpecialMove
+    [System.Serializable] public class StunBox : SpecialMove
     {
         //Really private, accessors for serialization only
 

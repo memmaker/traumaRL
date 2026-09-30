@@ -10,7 +10,7 @@ namespace RogueBasin
     /// <summary>
     /// Loads a txt file made in ascii paint or similar
     /// </summary>
-    class LastMapGeneratorFromASCIIFile
+    [System.Serializable] class LastMapGeneratorFromASCIIFile
     {
         bool fileLoaded = false;
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class Healing : PlayerEffectInstant
+    [System.Serializable] public class Healing : PlayerEffectInstant
     {
         public int healingQuantity { get; set; }
 

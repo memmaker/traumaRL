@@ -8,7 +8,7 @@ namespace RogueBasin.Spells
     /// <summary>
     /// Gives a temporary boost to armour
     /// </summary>
-    public class MageArmour : Spell
+    [System.Serializable] public class MageArmour : Spell
     {
         public override bool DoSpell(Point target)
         {

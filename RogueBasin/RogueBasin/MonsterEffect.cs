@@ -8,7 +8,7 @@ namespace RogueBasin
     /// Represents a creature event that has a duration in the game.
     /// </summary>
     [System.Xml.Serialization.XmlInclude(typeof(MonsterEffects.SlowDown))]
-    public abstract class MonsterEffect
+    [System.Serializable] public abstract class MonsterEffect
     {
         
         public MonsterEffect()

@@ -9,7 +9,7 @@ namespace RogueBasin
     /// The storing creature should pass OnStart(this) OnEnd(this)
     /// This saves storing the creature in the effect which, although nice, is hard to serialize
     /// </summary>
-    public abstract class CreatureEffect
+    [System.Serializable] public abstract class CreatureEffect
     {
 
         public CreatureEffect()

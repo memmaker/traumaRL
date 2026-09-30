@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TileEngine
 {
-    class TileFlags
+    [System.Serializable] class TileFlags
     {
         public TileFlags()
         {
@@ -12,7 +12,7 @@ namespace TileEngine
         }
     }
 
-    class Animation
+    [System.Serializable] class Animation
     {
         public Animation(int durationMS) {
             DurationMS = durationMS;
@@ -22,7 +22,7 @@ namespace TileEngine
         public int CurrentFrame { get; set; }
     }
 
-    class TileCell
+    [System.Serializable] class TileCell
     {
         /// <summary>
         /// -1 signifies empty

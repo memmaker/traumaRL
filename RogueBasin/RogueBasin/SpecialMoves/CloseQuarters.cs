@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.SpecialMoves
 {
-    public class CloseQuarters : SpecialMove
+    [System.Serializable] public class CloseQuarters : SpecialMove
     {
         //Really private, accessors for serialization only
 

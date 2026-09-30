@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RogueBasin.Locks
 {
-    public class SimpleLockedDoorWithMovie : SimpleLockedDoor
+    [System.Serializable] public class SimpleLockedDoorWithMovie : SimpleLockedDoor
     {
         private string openMovie;
         private string cantOpenMovie;

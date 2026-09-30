@@ -23,7 +23,7 @@ namespace RogueBasin
             Computer2, Computer3, Antennae
         }
         
-        public class Decoration {
+        [System.Serializable] public class Decoration {
             public char representation;
             public System.Drawing.Color colour;
             public bool isBlocking;

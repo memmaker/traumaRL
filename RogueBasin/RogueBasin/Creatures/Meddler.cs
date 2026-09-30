@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Healer. Quite clever missile troop
     /// </summary>
-    public class Meddler : MonsterSpecialAI
+    [System.Serializable] public class Meddler : MonsterSpecialAI
     {
         const int classDeltaHitpoints = 15;
         const int classMinHitpoints = 10;

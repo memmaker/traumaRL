@@ -14,7 +14,7 @@ namespace RogueBasin
     /// <summary>
     /// Store the mapping between a hidden name and the actual name of a potion. Much nicer OO ways to do it but I don't have time!
     /// </summary>
-    public class HiddenNameInfo
+    [System.Serializable] public class HiddenNameInfo
     {
         public string ActualName { get; set; } //SingleItemDescription
         public string HiddenName { get; set; } //random each time
@@ -25,7 +25,7 @@ namespace RogueBasin
         public HiddenNameInfo(string actual, string hidden, string user) { ActualName = actual; HiddenName = hidden; UserName = user; }
     }
 
-    public class KillCount
+    [System.Serializable] public class KillCount
     {
         public Monster type;
         public int count = 0;
@@ -34,7 +34,7 @@ namespace RogueBasin
     /// <summary>
     /// The contents of a map square: Creatures & Items
     /// </summary>
-    public class SquareContents
+    [System.Serializable] public class SquareContents
     {
         /// <summary>
         /// Reference to monster in the square
@@ -63,7 +63,7 @@ namespace RogueBasin
         }
     }
 
-    public class DungeonProfile {
+    [System.Serializable] public class DungeonProfile {
         public int dungeonStartLevel;
         public int dungeonEndLevel;
 
@@ -90,7 +90,7 @@ namespace RogueBasin
     /// <summary>
     /// Information about the state of dungeons in princessRL
     /// </summary>
-    public class DungeonInfo
+    [System.Serializable] public class DungeonInfo
     {
         List<DungeonProfile> dungeons;
 
@@ -357,7 +357,7 @@ namespace RogueBasin
     /// <summary>
     /// Keeps or links to all the state in the game
     /// </summary>
-    public class Dungeon
+    [System.Serializable] public class Dungeon
     {
         List<Map> levels;
 
@@ -2099,6 +2099,7 @@ namespace RogueBasin
             {
                 if (!player.IsEffectActive(typeof(PlayerEffects.BioProtect)))
                 {
+                    RvipInput.Killer = null; //RVIP 9: environment
                     player.ApplyDamageToPlayerHitpoints(5);
                 }
             }
@@ -2588,6 +2589,7 @@ namespace RogueBasin
             //We can't take the monster out of the collection directly since we might still be iterating through them
             //Instead set a flag on the monster and remove it after all turns are complete
             monster.Alive = false;
+            RvipInput.Sound("kill"); //RVIP 6
 
             //Remove all existing effects
             monster.RemoveAllEffects();
@@ -3682,7 +3684,7 @@ namespace RogueBasin
 
         }
 
-        public struct KillRecord
+        [System.Serializable] public struct KillRecord
         {
             public int killCount;
             public List<string> killStrings;
@@ -4349,6 +4351,9 @@ namespace RogueBasin
             }
             */
             //RunMainLoop = false;
+            RvipSave.Delete(); //RVIP: roguelike, one life
+            RvipInput.Beacon(playerWon, playerQuit); //RVIP 9: before the end screens' key waits
+            if (!playerQuit) RvipInput.Sound(playerWon ? "win" : "death"); //RVIP 6
             EndOfGameMechanics(playerWon, playerQuit);
         }
 

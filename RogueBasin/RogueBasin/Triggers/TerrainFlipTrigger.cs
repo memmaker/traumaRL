@@ -7,7 +7,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// When you enter the entrance square
     /// </summary>
-    public class TerrainFlipTrigger : DungeonSquareTrigger
+    [System.Serializable] public class TerrainFlipTrigger : DungeonSquareTrigger
     {
 
         public MapTerrain flipToTerrain;

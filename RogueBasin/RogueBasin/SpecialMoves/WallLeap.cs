@@ -7,7 +7,7 @@ namespace RogueBasin.SpecialMoves
     /// <summary>
     /// This move is learnt with VaultBackstab and provides the initial move before the backstab
     /// </summary>
-    public class WallLeap : SpecialMove
+    [System.Serializable] public class WallLeap : SpecialMove
     {
         //Really private, accessors for serialization only
 

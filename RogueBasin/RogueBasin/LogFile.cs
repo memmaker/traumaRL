@@ -10,7 +10,7 @@ namespace RogueBasin
         High = 1, Medium = 2, Low = 3, Profiling = 4
     }
 
-    public sealed class LogFile
+    [System.Serializable] public sealed class LogFile
     {
         static LogFile instance = null;
 

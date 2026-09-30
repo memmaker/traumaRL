@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Spells
 {
-    public class Exit : Spell
+    [System.Serializable] public class Exit : Spell
     {
         public override bool DoSpell(Point target)
         {

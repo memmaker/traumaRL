@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace RogueBasin
 {
     
-    public class ArrayCache<T>
+    [System.Serializable] public class ArrayCache<T>
     {
         private T[,] arrayCache;
         
