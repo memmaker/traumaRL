@@ -313,7 +313,7 @@ async function main() {
 	const files = {}, sav = await getFile(SAV).catch(() => null);
 	if (sav) files[SAV] = new Uint8Array(sav);
 	/* RVIP 9: the game never asks a name (always "Dave"): ask once for the graveyard, kept in web-layout.json; Cancel = no name */
-	if (typeof L.name !== 'string') { const n = window.prompt('Your name for the graveyard and leaderboard (Cancel: none):', ''); L.name = (n || '').trim().slice(0, 30); saveLayout(true); }
+	if (typeof L.name !== 'string') { let n = ''; try { n = window.prompt('Your name for the graveyard and leaderboard (Cancel: none):', ''); } catch (e) {}  /* prompt() throws in embedded browsers: no name, game still starts */ L.name = (n || '').trim().slice(0, 30); saveLayout(true); }
 	const args = new URLSearchParams(location.search).has('rviplocks') ? ['rviplocks'] : [];
 	if (L.name) args.push('name=' + L.name);
 	worker.postMessage({ t: 'init', ring: ring.buffer, files, args });
