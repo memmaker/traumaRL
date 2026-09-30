@@ -415,7 +415,25 @@ namespace RogueBasin
 
     [System.Serializable] public class Map
     {
-        public MapSquare[,] mapSquares;
+        [System.NonSerialized] public MapSquare[,] mapSquares;
+        //RVIP save: squares as one long (+ SoundMag) each; 200k MapSquare objects took seconds in wasm
+        long[] rvipSquares; double[] rvipSound;
+        [System.Runtime.Serialization.OnSerializing] void RvipOnSerializing(System.Runtime.Serialization.StreamingContext c)
+        {
+            if (mapSquares == null) { rvipSquares = null; rvipSound = null; return; }
+            int w = mapSquares.GetLength(0), h = mapSquares.GetLength(1);
+            rvipSquares = new long[w * h]; rvipSound = new double[w * h];
+            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) { var m = mapSquares[i, j]; if (m == null) continue; rvipSquares[i * h + j] = m.RvipPack() | 1L << 40; rvipSound[i * h + j] = m.SoundMag; }
+        }
+        [System.Runtime.Serialization.OnSerialized] void RvipOnSerialized(System.Runtime.Serialization.StreamingContext c) { rvipSquares = null; rvipSound = null; }
+        [System.Runtime.Serialization.OnDeserialized] void RvipOnDeserialized(System.Runtime.Serialization.StreamingContext c)
+        {
+            if (rvipSquares == null) throw new System.Runtime.Serialization.SerializationException("old save format");
+            int w = width, h = rvipSquares.Length / Math.Max(1, width);
+            mapSquares = new MapSquare[w, h];
+            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) { long v = rvipSquares[i * h + j]; if ((v & 1L << 40) == 0) continue; var m = MapSquare.RvipUnpack(v); m.SoundMag = rvipSound[i * h + j]; RvipArray.Set(mapSquares, i, j, m); }
+            rvipSquares = null; rvipSound = null;
+        }
         public int[,] roomIdMap;
         public Point PCStartLocation;
 

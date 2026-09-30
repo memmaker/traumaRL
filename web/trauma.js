@@ -12,7 +12,7 @@
  * page asks for it when the tab is hidden and on leaving (only at the command
  * prompt, only if time moved), keeps it in the same database and hands it to the
  * worker on load (resume). The game deletes it at death or victory. A save takes
- * ~5 s in the wasm interpreter, so there is no timed autosave; leaving with an
+ * ~1 s in the wasm interpreter; the page also asks every 5 minutes. Leaving with an
  * unsaved run shows the browser's "Leave site?" and saves meanwhile (Stay = kept).
  */
 const SLOT = 48, NSLOT = 64, SPR = 16;   /* sheet sprite size: TraumaSprites.png as shipped, never pre-scaled */
@@ -326,6 +326,7 @@ async function main() {
 	if (L.name) args.push('name=' + L.name);
 	worker.postMessage({ t: 'init', ring: ring.buffer, files, args });
 	window.addEventListener('keydown', onKey);
+	setInterval(requestSave, 300000);   /* timed autosave (the game skips it unless time moved) */
 	document.addEventListener('visibilitychange', () => { if (document.hidden) requestSave(); });
 	window.addEventListener('beforeunload', e => {
 		if (!app.running || ended || !info.unsaved) return;
