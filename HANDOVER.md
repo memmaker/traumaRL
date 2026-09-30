@@ -3,7 +3,47 @@
 ## RVIP progress
 
 - **Stage 1 (Get + build): done.**
-- **Stage 4 (Tiles): done.** Next: **stage 5**.
+- **Stage 5 (Web page and windows): done in the cloud, final check pending locally.** Next: **stage 6**.
+  - Page: `web/index.html` + `web/trauma.js` on `../rvip-wm.js` / `../rvip-app.js` (Forays
+    template). Windows: Map (the only canvas), Status, Messages, Inventory; one-window mode =
+    the game's whole 60×35 screen on the map canvas. Menus (Enter, `i`) = `RvipWM.popup`
+    (centred in the Map body, text size = Messages' size). Prompt line = `RvipWM.prompt`.
+  - Panes come from C#: `WebRenderer.Panes()` (shim) adds to the present JSON `full`
+    (a whole-screen view is up = `DrawFrame(clear:true)` since the last `Clear()`: movies,
+    history/clue/log lists, end screens → drawn whole on the map canvas), `map` (viewport rect,
+    `Screen.RvipMapRect`), `status` (rows of `["text",rgb]` / `[spriteId,rgb]` inside
+    `Screen.RvipStatsRect`, trailing empty rows dropped; sprites become 1em inline images of
+    the recoloured sheet sprite), `prompt` (text runs in `Screen.RvipMsgRect`), `log` (new
+    `messageHistory` lines, counter `MessageQueue.RvipHistoryAdded`), `inv`
+    (`RogueBase.RvipInventoryJson()`, same rows as the `i` list), `atCmd` (`RvipAtCmd`).
+  - Map: the game's own camera (37×27 viewport centred on the hero); the page centres that
+    canvas in the Map body (`RvipWM.center`), scrolls when smaller, never scales with the window.
+    Cell = 16/32/48/64 px only (whole multiples of the sheet's 16 px): the WM keeps the map's
+    A−/A+ value as a step 8..11 (`size: {map: () => 8}`, `fontMax.map = 11`), cell = 16 × (step − 7).
+    Stage-4 top-right A−/A+ bar removed.
+  - Settings: IndexedDB database `/traumarl/files` (`RvipApp.dir + '/files'`), key
+    `web-layout.json` = `{wm, face}`; no localStorage. Written on change (300 ms debounce) and on `pagehide`.
+  - **Saves: none.** TraumaRL has no working save: upstream's `Dungeon.SaveGame()` (XmlSerializer,
+    `S` key commented out upstream) throws "error reflecting type SaveGameInfo" (native test),
+    `LoadGame` is unreachable and `SaveGameInfo` lacks TraumaRL state (locks…). So no save on
+    quit / resume on reload: a reload starts a new station (beforeunload warns while running).
+    File ▾ keeps Export/Import (they say there is no save) and New game (= reload). Needs a
+    decision by the user: write a serializer (big) or accept one-sitting runs.
+  - Tests (cloud, Playwright Chromium, real `rvip-*.js` from `/home/user/rvip/web` served at `../`):
+    layout 1280×720, A+ ×2 on Map → 48 px cells (scrolled, centred), A+ on Status changes only it,
+    Enter menu pop-up in the Map body, resize 1000×650 → 1440×900 → 1200×750 → 760×500 → 1280×720
+    (no negative sizes, text sizes fixed), reload keeps layout and sizes, IndexedDB only
+    `/traumarl/files` (+ shared `rvip-outbox`), localStorage empty, no console errors.
+  - **Local agent:** check against the current `~/Games/rvip-tools/web/rvip-wm.js` (the cloud copy
+    may be older), look in the pane (drag dividers, one-window mode, a movie/end screen), then
+    `web/build.sh`, commit + push, `web/deploy.sh` (web name `traumarl`,
+    `/var/www/ruzzoli.de/roguelikes/traumarl/`), check live with `curl` + md5 vs `web/dist`.
+  - Open: no saves (above); no help.html yet (Help shows a fallback, stage 6); no Visible
+    window (the game has no such list); the map viewport stays the game's 37×27 (bigger windows
+    show black around it; enlarging `ViewableWidth/Height` for the web would fill them);
+    status sprites (hearts, ammo, weapon icons) are inline images of the sheet sprites, not glyphs;
+    no Tiles/Font select for the map (tiles only, rule 8).
+- **Stage 4 (Tiles): done.**
   - Set: the game's own `RogueBasin/TraumaRL/bin/Debug/TraumaSprites.png` (256×768,
     16×16, 16 per row), copied unchanged into `web/dist` by `build.sh`; the only set,
     never mixed. Rows 0–15 = CP437 font glyphs (ids < 256), rows 16+ = pictures

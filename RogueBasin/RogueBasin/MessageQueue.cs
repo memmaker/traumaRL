@@ -33,6 +33,9 @@ namespace RogueBasin
 
         public int AddedCount { get; private set; }
 
+        /// RVIP: lines ever added to messageHistory (the web Messages window sends the new ones)
+        public static int RvipHistoryAdded;
+
         public MessageQueue()
         {
             messages = new List<string>();
@@ -120,7 +123,7 @@ namespace RogueBasin
             foreach (string s in wrappedMsgs)
             {
                 if (s.Length > 0)
-                    messageHistory.AddLast(s.Trim());
+                { messageHistory.AddLast(s.Trim()); RvipHistoryAdded++; }
             }
 
             while (messageHistory.Count > messageHistorySize)

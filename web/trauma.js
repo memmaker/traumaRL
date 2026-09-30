@@ -1,19 +1,38 @@
 /*
- * TraumaRL in the browser (RVIP stage 1 page). The game (C#, .NET browser-wasm)
- * runs in worker.js and hands over its finished 60x45 cell buffer: per cell a
- * layer count, then (sprite id, fg RGB, bg RGB or -1) per layer, all decided by
- * the game; plus a JSON of text runs. This page draws sprites from
- * TraumaSprites.png (white -> fg, magenta -> bg/transparent, as the SDL build
- * did) and forwards keys. No storage yet (stage 1).
+ * TraumaRL in the browser (RVIP stage 5 page). The game (C#, .NET browser-wasm)
+ * runs in worker.js and hands over its finished cell buffer (per cell a layer
+ * count, then sprite id, fg RGB, bg RGB or -1 per layer) plus a JSON (shim
+ * WebRenderer.Panes): text runs, the map rectangle, status lines, prompt, new
+ * message lines, inventory rows, the Enter/i menu and whether a whole-screen view
+ * (movie, history, end screen) is up. Everything shown is decided there; this page
+ * lays the windows out (../rvip-wm.js), draws sprites from TraumaSprites.png
+ * (white -> fg, magenta -> bg, nearest-neighbour), forwards keys and keeps its
+ * settings in its own IndexedDB database ('/traumarl/files'; no localStorage).
+ * TraumaRL has no save games (upstream's XmlSerializer save is dead code), so a
+ * reload starts a new station; the layout and sizes survive.
  */
 const SLOT = 48, NSLOT = 64, SPR = 16;   /* sheet sprite size: TraumaSprites.png as shipped, never pre-scaled */
-/* map cell size in screen px: A-/A+ step it by 4 px; sprites are scaled at draw time, nearest-neighbour */
-const CELL_MIN = 8, CELL_MAX = 64, CELL_STEP = 4;
-let cell = SPR;
+/* map cell size: whole multiples of the 16 px sprite only (RVIP 5.8), A−/A+ on the Map title bar.
+   The WM keeps the map's size like every window's (state.fs.map, 8..11); here it is a step:
+   8 -> 16 px, 9 -> 32, 10 -> 48, 11 -> 64. */
+const MAPSTEP0 = 8, MAPSTEPS = 4;
+const mapCell = () => SPR * (Math.max(0, Math.min(MAPSTEPS - 1, (wm && wm.zoomed('map') || MAPSTEP0) - MAPSTEP0)) + 1);
+const DB = RvipApp.dir + '/files';
 const $ = id => document.getElementById(id);
-let worker, ring, scr = null, info = { texts: [] }, dirty = false, sheet, sheetData;
-const cache = new Map();
-window.trauma = { running: false, text, zoom, get cell() { return cell; }, get info() { return info; }, get cells() { return scr; } };
+const hex = c => '#' + (c & 0xffffff).toString(16).padStart(6, '0');
+let worker, ring, db, scr = null, info = { texts: [] }, dirty = false, sheet, sheetData, ended = false;
+let wm = null, L = { wm: null, face: '' }, saveT = 0;
+const cache = new Map(), icons = new Map();
+
+const app = RvipApp({
+	name: 'traumarl',
+	save: () => null,
+	clear: () => {},
+	put: () => 'TraumaRL has no save files to import.',
+	noSave: 'TraumaRL has no save files: every run is one sitting.',
+	newGame: () => { if (confirm('Abandon this run and start a new station?')) { app.running = false; location.reload(); } },
+	helpText: 'Press ? in the game for its key help; Enter opens the command menu.'
+});
 
 /* ---------- cross-origin isolation (SharedArrayBuffer) ---------- */
 async function isolate() {
@@ -28,6 +47,30 @@ async function isolate() {
 	return new Promise(() => {});
 }
 
+/* ---------- IndexedDB: page settings (web-layout.json) ---------- */
+function openDB() {
+	return new Promise((ok, bad) => {
+		const r = indexedDB.open(DB, 1);
+		r.onupgradeneeded = () => r.result.createObjectStore('files');
+		r.onsuccess = () => ok(r.result);
+		r.onerror = () => bad(r.error);
+	});
+}
+function tx(mode, f) {
+	return new Promise((ok, bad) => {
+		const t = db.transaction('files', mode), out = f(t.objectStore('files'));
+		t.oncomplete = () => ok(out && out.result);
+		t.onerror = () => bad(t.error);
+	});
+}
+const putFile = (name, data) => tx('readwrite', s => s.put(data, name));
+const getFile = name => tx('readonly', s => s.get(name));
+function saveLayout(now) {
+	clearTimeout(saveT);
+	const w = () => putFile('web-layout.json', new TextEncoder().encode(JSON.stringify(L))).catch(() => {});
+	if (now) w(); else saveT = setTimeout(w, 300);
+}
+
 /* ---------- keys ---------- */
 function sendKey(code, key, mods) {
 	const str = code + '\t' + key + '\t' + mods;
@@ -39,14 +82,15 @@ function sendKey(code, key, mods) {
 	Atomics.store(ring, 0, w + 1);
 	Atomics.notify(ring, 0);
 }
-document.addEventListener('keydown', e => {
-	if (!ring || e.metaKey) return;
-	if (/^(Shift|Control|Alt|Meta)/.test(e.code) || e.key === 'Dead') return;
+function onKey(e) {
+	if (!ring || !app.running || e.metaKey) return;
+	if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+	if (/^(Shift|Control|Alt|Meta)/.test(e.code) || e.key === 'Dead' || /^F(5|11|12)$/.test(e.key)) return;
 	e.preventDefault();
 	sendKey(e.code || '', e.key || '', (e.shiftKey ? 's' : '') + (e.ctrlKey ? 'c' : '') + (e.altKey ? 'a' : ''));
-});
+}
 
-/* ---------- drawing ---------- */
+/* ---------- sprites ---------- */
 function sprite(id, fg, bg) {
 	const k = id + ':' + fg + ':' + bg;
 	let c = cache.get(k);
@@ -66,45 +110,72 @@ function sprite(id, fg, bg) {
 	cache.set(k, c);
 	return c;
 }
+/* a sprite as an inline image for the text windows (sized 1em by CSS, so it follows A−/A+) */
+function icon(id, fg) {
+	const k = id + ':' + fg;
+	let u = icons.get(k);
+	if (!u) { u = sprite(id, fg, -1).toDataURL(); icons.set(k, u); }
+	const im = document.createElement('img'); im.src = u; im.alt = '';
+	return im;
+}
+
+/* ---------- map (the only canvas) ---------- */
 function draw() {
 	dirty = false;
-	if (!scr || !sheetData) return;
-	const cv = $('screen'), g = cv.getContext('2d'), C = info.cols, R = info.rows, S = 1 + info.layers * 3;
-	if (cv.width !== C * cell || cv.height !== R * cell) { cv.width = C * cell; cv.height = R * cell; }
+	if (!scr || !sheetData || !wm) return;
+	const cv = $('map').querySelector('canvas'), C = info.cols, S = 1 + info.layers * 3, cell = mapCell();
+	/* whole-screen views (movies, history, end screen) and one-window mode: the game's full screen; else its map viewport */
+	const [x0, y0, w, h] = info.full || wm.mode() === 'single' ? [0, 0, info.cols, info.rows] : info.map;
+	if (cv.width !== w * cell || cv.height !== h * cell) { cv.width = w * cell; cv.height = h * cell; }
+	cv.style.width = cv.width + 'px'; cv.style.height = cv.height + 'px';
+	const g = cv.getContext('2d');
 	g.imageSmoothingEnabled = false;
 	g.fillStyle = '#000'; g.fillRect(0, 0, cv.width, cv.height);
-	for (let y = 0; y < R; y++) for (let x = 0; x < C; x++) {
-		const o = (x + y * C) * S, n = scr[o];
+	for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+		const o = (x0 + x + (y0 + y) * C) * S, n = scr[o];
 		for (let l = 0; l < n; l++) { const p = o + 1 + l * 3; g.drawImage(sprite(scr[p], scr[p + 1], scr[p + 2]), x * cell, y * cell, cell, cell); }
 	}
 	g.font = Math.round(cell * 18 / SPR) + 'px alexis, monospace'; g.textBaseline = 'top';
-	for (const [x, y, rgb, s] of info.texts) { g.fillStyle = '#' + rgb.toString(16).padStart(6, '0'); g.fillText(s, x * cell, y * cell - cell / SPR); }
-}
-function zoom(d) {
-	cell = Math.max(CELL_MIN, Math.min(CELL_MAX, cell + d * CELL_STEP));
-	$('zoom').textContent = cell + ' px';
-	if (!dirty) { dirty = true; requestAnimationFrame(draw); }
-}
-/* text shadow for tests: top sprite as ASCII (ids < 127 are glyphs) plus the text runs */
-function text() {
-	if (!scr) return '';
-	const C = info.cols, R = info.rows, S = 1 + info.layers * 3, rows = [];
-	for (let y = 0; y < R; y++) {
-		let s = '';
-		for (let x = 0; x < C; x++) { const o = (x + y * C) * S, n = scr[o], id = n ? scr[o + 1 + (n - 1) * 3] : 32; s += id > 32 && id < 127 ? String.fromCharCode(id) : n ? '#' : ' '; }
-		rows.push(s.trimEnd());
+	for (const [x, y, rgb, s] of info.texts) {
+		if (y < y0 || y >= y0 + h || x < x0 || x >= x0 + w) continue;
+		g.fillStyle = hex(rgb); g.fillText(s, (x - x0) * cell, (y - y0) * cell - cell / SPR);
 	}
-	let s = rows.join('\n') + '\n' + info.texts.map(t => t[3]).join('\n');
-	if (info.menu) s += '\n[menu ' + info.menu.title + ']\n' + info.menu.rows.map((r, i) => (i === info.menu.cur ? '>' : ' ') + (r[4] ? r[1] : r[0] + ') ' + r[1] + ' ' + r[2])).join('\n');
-	return s;
+	/* the game centres its own viewport on the hero: the page centres that viewport in the window
+	   (scrolls it when the window is smaller, clamped at the edges) */
+	RvipWM.center(cv, cv.width / 2, cv.height / 2, cv.width, cv.height);
 }
+function redraw() { if (!dirty) { dirty = true; requestAnimationFrame(draw); } }
 
-/* ---------- menu pop-up: the game sends title, rows [accel, label, key, rgb, header] and cursor ---------- */
-const hex = c => '#' + c.toString(16).padStart(6, '0');
+
+/* ---------- text windows: lines and colours from the game ---------- */
+function status(rows) {
+	const k = JSON.stringify(rows), pre = $('stat');
+	if (pre._k === k) return;
+	pre._k = k; pre.replaceChildren();
+	rows.forEach((segs, i) => {
+		if (i) pre.append('\n');
+		for (const [v, rgb] of segs) {
+			if (typeof v === 'number') pre.append(icon(v, rgb));
+			else { const s = document.createElement('span'); s.textContent = v; if (rgb) s.style.color = hex(rgb); pre.append(s); }
+		}
+	});
+}
+function inventory(rows) {
+	const k = JSON.stringify(rows), el = $('inv');
+	if (el._k === k) return;
+	el._k = k; el.replaceChildren();
+	for (const [label, key, rgb, head] of rows) {
+		const d = document.createElement('div');
+		if (head) { d.className = 'wm-vh'; d.textContent = label; }
+		else { d.textContent = key + ') ' + label; d.style.color = hex(rgb); }
+		el.append(d);
+	}
+}
 function menu(m) {
 	const box = $('menu');
 	if (!m) { box.hidden = true; return; }
 	box.replaceChildren();
+	box.style.fontSize = RvipWM.fontSize('msg') + 'px';
 	const t = document.createElement('div'); t.className = 'title'; t.textContent = m.title; box.append(t);
 	m.rows.forEach(([acc, label, key, rgb, head], i) => {
 		const d = document.createElement('div');
@@ -120,11 +191,83 @@ function menu(m) {
 		box.append(d);
 	});
 	box.hidden = false;
+	RvipWM.popup(box, { center: true });
+}
+function update(i) {
+	RvipWM.prompt.text(i.full ? '' : i.prompt || '');
+	RvipWM.prompt.wait(i.atCmd);
+	if (i.log) i.log.forEach(l => RvipWM.log($('log'), l));
+	if (i.status) status(i.status);
+	if (i.inv) inventory(i.inv);
+	menu(i.menu);
 }
 
+/* ---------- windows ---------- */
+function fonts() {
+	const f = L.face ? '"' + L.face + '", ui-monospace, Menlo, Consolas, monospace' : '';
+	['statb', 'msgb', 'inv', 'menu'].forEach(id => { $(id).style.fontFamily = f; });
+}
+function loadFace(n) {
+	if (!n) { fonts(); return; }
+	const ff = new FontFace(n, 'url(../fonts/' + n + '.woff)');
+	ff.load().then(() => { document.fonts.add(ff); fonts(); }).catch(() => app.status('Could not load the font ' + n + '.', true));
+}
+async function makeWM() {
+	try {
+		const d = await getFile('web-layout.json');
+		if (d) { const s = JSON.parse(new TextDecoder().decode(d)); L = { wm: s.wm || null, face: s.face || '' }; }
+	} catch (_) { }
+	loadFace(L.face);
+	wm = RvipWM({
+		area: $('game'), menu: $('btn-layout'),
+		wins: [{ id: 'map', title: 'Map' }, { id: 'status', title: 'Status' }, { id: 'msg', title: 'Messages' }, { id: 'inv', title: 'Inventory' }],
+		multi: { d: 'h', r: 0.7, a: { d: 'v', r: 0.78, a: 'map', b: 'msg' }, b: { d: 'v', r: 0.62, a: 'status', b: 'inv' } },
+		single: 'map',
+		state: L.wm,
+		save: st => { L.wm = st; saveLayout(); },
+		layout: () => { redraw(); if (info.menu) menu(info.menu); },
+		zoom: { map: () => redraw() },
+		size: { map: () => MAPSTEP0 },
+		fontMax: { map: MAPSTEP0 + MAPSTEPS - 1 },
+		onReset: () => { L.wm = wm.state(); saveLayout(); redraw(); }
+	});
+	wm.apply();
+}
+function bar() {
+	RvipWM.dropdown($('btn-file'), $('menu-file'));
+	const sel = $('sel-font');
+	RvipWM.fonts.then(() => { RvipWM.fontOptions(sel); sel.value = L.face || ''; }).catch(() => { });
+	sel.onchange = function () { L.face = this.value; saveLayout(); loadFace(this.value); this.blur(); };
+	sel.addEventListener('keydown', e => e.stopPropagation());
+	$('btn-restart').onclick = () => location.reload();
+	document.querySelectorAll('#bar button').forEach(b => b.addEventListener('mousedown', e => e.preventDefault()));
+}
+
+/* ---------- test hooks (web/test.mjs): top sprite as ASCII per cell, text runs, menu ---------- */
+function text() {
+	if (!scr) return '';
+	const C = info.cols, R = info.rows, S = 1 + info.layers * 3, rows = [];
+	for (let y = 0; y < R; y++) {
+		let s = '';
+		for (let x = 0; x < C; x++) { const o = (x + y * C) * S, n = scr[o], id = n ? scr[o + 1 + (n - 1) * 3] : 32; s += id > 32 && id < 127 ? String.fromCharCode(id) : n ? '#' : ' '; }
+		rows.push(s.trimEnd());
+	}
+	let s = rows.join('\n') + '\n' + info.texts.map(t => t[3]).join('\n');
+	if (info.menu) s += '\n[menu ' + info.menu.title + ']\n' + info.menu.rows.map((r, i) => (i === info.menu.cur ? '>' : ' ') + (r[4] ? r[1] : r[0] + ') ' + r[1] + ' ' + r[2])).join('\n');
+	return s;
+}
+window.trauma = { running: false, text, key: sendKey, get cell() { return mapCell(); }, get info() { return info; }, get cells() { return scr; }, get wm() { return wm; } };
+
+function gameOver() {
+	if (ended) return;
+	ended = true; app.running = false;
+	setTimeout(() => { $('overlay').hidden = false; }, 300);
+}
 async function main() {
-	for (const [id, d] of [['aminus', -1], ['aplus', 1]]) { const b = $(id); b.onclick = () => zoom(d); b.onmousedown = e => e.preventDefault(); b.tabIndex = -1; }
-	if (!await isolate()) { $('status').textContent = 'This browser cannot isolate the page (SharedArrayBuffer): the game cannot run.'; return; }
+	bar();
+	if (!await isolate()) { app.status('This browser cannot isolate the page (SharedArrayBuffer): the game cannot run.', true); return; }
+	db = await openDB();
+	await makeWM();
 	sheet = new Image(); sheet.src = 'TraumaSprites.png';
 	await sheet.decode();
 	const c = document.createElement('canvas'); c.width = sheet.width; c.height = sheet.height;
@@ -133,14 +276,22 @@ async function main() {
 	try { const f = new FontFace('alexis', 'url(alexisv3.ttf)'); await f.load(); document.fonts.add(f); } catch (e) {}
 	ring = new Int32Array(new SharedArrayBuffer(4 * (2 + SLOT * NSLOT)));
 	worker = new Worker('worker.js', { type: 'module' });
+	worker.onerror = e => app.crashed(e);
 	worker.onmessage = e => {
 		const m = e.data;
-		if (m.t === 'screen') { if (!window.trauma.running) $('status').textContent = ''; window.trauma.running = true; scr = m.cells; info = JSON.parse(m.info); menu(info.menu); if (!dirty) { dirty = true; requestAnimationFrame(draw); } }
-		else if (m.t === 'started') { $('status').textContent = 'Generating the station…'; }
-		else if (m.t === 'wait') { window.trauma.running = true; }
-		else if (m.t === 'crash') { $('status').textContent = 'The game crashed: ' + m.msg; console.error(m.msg); }
-		else if (m.t === 'quit' || m.t === 'exit') { $('status').textContent = 'The game has ended. Reload to play again.'; }
+		if (m.t === 'screen') {
+			scr = m.cells;
+			try { info = JSON.parse(m.info); } catch (err) { console.error('info', err); return; }
+			if (!app.running && !ended) { app.running = window.trauma.running = true; app.status(''); $('game').hidden = false; wm.apply(); }
+			update(info); redraw();
+		}
+		else if (m.t === 'started') app.status('Generating the station…');
+		else if (m.t === 'crash') { app.crashed(new Error(m.msg.split('\n')[0])); console.error(m.msg); }
+		else if (m.t === 'quit' || m.t === 'exit') gameOver();
 	};
 	worker.postMessage({ t: 'init', ring: ring.buffer, args: new URLSearchParams(location.search).has('rviplocks') ? ['rviplocks'] : [] });
+	window.addEventListener('keydown', onKey);
+	window.addEventListener('beforeunload', e => { if (app.running) { e.preventDefault(); e.returnValue = ''; } });
+	window.addEventListener('pagehide', () => saveLayout(true));
 }
 main();

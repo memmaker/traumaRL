@@ -145,6 +145,23 @@ namespace RogueBasin
             }
             RvipMenuJson = sb.Append("]}").ToString();
         }
+        /// RVIP stage 5: the web Inventory window, same rows as the i list: [label, key, rgb, header]
+        public string RvipInventoryJson()
+        {
+            if (Game.Dungeon == null || Game.Dungeon.Player == null) return "[]";
+            var sb = new StringBuilder("[");
+            var m = RvipItemMenu();
+            for (int i = 0; i < m.Rows.Count; i++)
+            {
+                var r = m.Rows[i];
+                if (i > 0) sb.Append(',');
+                sb.Append('[').Append(RvipJson(r.Label)).Append(',').Append(RvipJson(r.KeyName ?? "")).Append(',').Append(r.Rgb).Append(',').Append(r.Header ? 1 : 0).Append(']');
+            }
+            return sb.Append(']').ToString();
+        }
+        /// RVIP stage 5: the game waits for a map command (no menu, no targetting, no movie)
+        public bool RvipAtCmd { get { return inputState == InputState.MapMovement && rvipMenu == null; } }
+
         static string RvipJson(string s)
         {
             var sb = new StringBuilder("\"");
