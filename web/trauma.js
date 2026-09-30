@@ -86,7 +86,32 @@ function text() {
 		for (let x = 0; x < C; x++) { const o = (x + y * C) * S, n = scr[o], id = n ? scr[o + 1 + (n - 1) * 3] : 32; s += id > 32 && id < 127 ? String.fromCharCode(id) : n ? '#' : ' '; }
 		rows.push(s.trimEnd());
 	}
-	return rows.join('\n') + '\n' + info.texts.map(t => t[3]).join('\n');
+	let s = rows.join('\n') + '\n' + info.texts.map(t => t[3]).join('\n');
+	if (info.menu) s += '\n[menu ' + info.menu.title + ']\n' + info.menu.rows.map((r, i) => (i === info.menu.cur ? '>' : ' ') + (r[4] ? r[1] : r[0] + ') ' + r[1] + ' ' + r[2])).join('\n');
+	return s;
+}
+
+/* ---------- menu pop-up: the game sends title, rows [accel, label, key, rgb, header] and cursor ---------- */
+const hex = c => '#' + c.toString(16).padStart(6, '0');
+function menu(m) {
+	const box = $('menu');
+	if (!m) { box.hidden = true; return; }
+	box.replaceChildren();
+	const t = document.createElement('div'); t.className = 'title'; t.textContent = m.title; box.append(t);
+	m.rows.forEach(([acc, label, key, rgb, head], i) => {
+		const d = document.createElement('div');
+		if (head) { d.className = 'head'; d.textContent = label; d.style.color = hex(rgb); }
+		else {
+			d.className = 'row' + (i === m.cur ? ' cur' : '');
+			const a = document.createElement('span'); a.textContent = acc + ') ';
+			const l = document.createElement('span'); l.textContent = label; l.style.color = hex(rgb);
+			const k = document.createElement('span'); k.className = 'key'; k.textContent = key;
+			d.append(a, l, k);
+			d.onclick = () => sendKey('Key' + acc.toUpperCase(), acc, '');
+		}
+		box.append(d);
+	});
+	box.hidden = false;
 }
 
 async function main() {
@@ -101,12 +126,12 @@ async function main() {
 	worker = new Worker('worker.js', { type: 'module' });
 	worker.onmessage = e => {
 		const m = e.data;
-		if (m.t === 'screen') { if (!window.trauma.running) $('status').textContent = ''; window.trauma.running = true; scr = m.cells; info = JSON.parse(m.info); if (!dirty) { dirty = true; requestAnimationFrame(draw); } }
+		if (m.t === 'screen') { if (!window.trauma.running) $('status').textContent = ''; window.trauma.running = true; scr = m.cells; info = JSON.parse(m.info); menu(info.menu); if (!dirty) { dirty = true; requestAnimationFrame(draw); } }
 		else if (m.t === 'started') { $('status').textContent = 'Generating the station…'; }
 		else if (m.t === 'wait') { window.trauma.running = true; }
 		else if (m.t === 'crash') { $('status').textContent = 'The game crashed: ' + m.msg; console.error(m.msg); }
 		else if (m.t === 'quit' || m.t === 'exit') { $('status').textContent = 'The game has ended. Reload to play again.'; }
 	};
-	worker.postMessage({ t: 'init', ring: ring.buffer });
+	worker.postMessage({ t: 'init', ring: ring.buffer, args: new URLSearchParams(location.search).has('rviplocks') ? ['rviplocks'] : [] });
 }
 main();

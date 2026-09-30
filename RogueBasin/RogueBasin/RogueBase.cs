@@ -174,7 +174,12 @@ namespace RogueBasin
                 return;
             }
 
+            //RVIP: Enter command menu and item menus
+            if (RvipMenuKey(ref args))
+                return;
+
             bool timeAdvances = ProcessKeypress(args);
+            RvipAfterCommand();
             if (timeAdvances)
             {
                 ProfileEntry("After user");

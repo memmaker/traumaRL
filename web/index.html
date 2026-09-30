@@ -9,11 +9,18 @@
 	html, body { margin: 0; background: #000; color: #ccc; font: 14px sans-serif; }
 	#screen { display: block; margin: 8px auto; image-rendering: pixelated; max-width: 100%; }
 	#status { text-align: center; padding: 6px; }
+	#menu { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); max-height: 100vh; overflow: auto;
+		background: #101018; border: 1px solid #889; font: 16px monospace; white-space: pre; padding: 0 1ch; color: #ccc; }
+	#menu .title { color: #fff; text-align: center; }
+	#menu .row { cursor: pointer; display: flex; }
+	#menu .row .key { margin-left: auto; padding-left: 2ch; color: #889; }
+	#menu .cur { background: #334; }
 </style>
 </head>
 <body>
 <div id="status">Loading TraumaRL…</div>
 <canvas id="screen" width="960" height="720"></canvas>
+<div id="menu" hidden></div>
 <script src="trauma.js"></script>
 </body>
 </html>

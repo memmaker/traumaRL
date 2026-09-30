@@ -29,6 +29,8 @@ namespace RogueBasin{
 		public static void Main(string[] args){
 			RvipInput.Backend = new WebBackend();
 			Unpack();
+			//RVIP debug (page URL ?rviplocks): Shift+K / menu entry toggles all locks open; off in normal play
+			if(Array.IndexOf(args, "rviplocks") >= 0) File.AppendAllText("config.txt", "\nrviplocks=true\n");
 			//sentinel for the Mono interpreter's T[,] store bug (the game swallows exceptions and retries level generation forever)
 			AppDomain.CurrentDomain.FirstChanceException += (o, e) => { if(e.Exception is ArrayTypeMismatchException) Console.WriteLine("ArrayTypeMismatchException (Mono T[,] store bug?)\n" + Environment.StackTrace); };
 			try{ TraumaRL.RvipEntry.Run(); }

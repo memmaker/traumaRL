@@ -3,7 +3,40 @@
 ## RVIP progress
 
 - **Stage 1 (Get + build): done.**
-- **Stage 2 (Explore + stairs + no `--More--`): done.** Next: **stage 3**.
+- **Stage 3 (Enter menu + item menus): done.** Next: **stage 4**.
+  - File `RogueBasin/RogueBasin/RvipMenu.cs` (partial `RogueBase`, in `DDRogue.csproj`
+    and `web/sources.props`). Hook: `RvipMenuKey(ref args)` in `KeyboardEventHandler`
+    before `ProcessKeypress`, `RvipAfterCommand()` right after it.
+  - Enter (MapMovement only) opens `RvipCommandMenu()`: groups Actions (fire/throw/use
+    from the equipped weapon's `Has*Action`, examine `x`, wait `.`), Items (`i`),
+    Travel (`e`, `<`, `>`), Other (help `?`), Debug (locks, only when enabled).
+    No movement entries. `i` opens `RvipItemMenu()` = TraumaRL's inventory: weapons
+    from `ItemMapping.WeaponMapping` (via `HeavyWeaponTranslation`) and wetware
+    from `WetwareMapping` the player holds; label = `Item.SingleItemDescription`,
+    colour = `Item.GetColour()`, key = the mapping key.
+  - Item actions run by handing the command's normal key (`KeyboardEventArgs`) to
+    `ProcessKeypress` (weapon: Equip = digit, or Fire/Throw/Use = `f` when in hand;
+    wetware: Switch on/off = its letter, none while disabled). Letter in the item
+    list = main action; Enter/Space/5/6/→ = action sub-menu; 4/← back; Esc/0/./
+    Keypad. close; 8/2/arrows move; + main action. After an item action the list
+    reopens if still in MapMovement, not exploring, and no monster in view.
+  - Presentation: `RogueBase.RvipMenuJson` (`{title,cur,rows:[[accel,label,key,rgb,header]]}`)
+    appended as `"menu"` to the present JSON by `WebRenderer.Flush`; `RvipPublish()` sets
+    `Screen.NeedsUpdate` (else no redraw happens). Page: `#menu` HTML pop-up sized to
+    content (`trauma.js` `menu()`), click sends the row's accelerator; `trauma.text()`
+    appends `[menu title]` + rows (`>` = cursor).
+  - Debug locks: page URL `?rviplocks` → worker passes `rviplocks` to `Main` →
+    `rviplocks=true` in config.txt → Shift+K (upstream debug key) and a Debug menu
+    entry toggle `AllLocksOpen`, without the rest of debug mode. Off otherwise.
+    Native: `OPEN=1` as before. Harness: `}` / `{` = ArrowDown/ArrowUp.
+  - Tests: native seed 2 NOMON: `___i}~a` equips pistol and reopens the list;
+    `___~}}~` reaches the item list; 3×3000 random keys no crash. Chromium:
+    Enter ↓ ↓ Enter shows the item list (shot `web/shots/menu.png`).
+  - Open: no item prompts exist in TraumaRL (only targetting), so nothing to
+    cursor there; no drop/examine item actions (the game has none, no item
+    descriptions); help movie `helpkeys0.amf` does not mention Enter/`i` yet;
+    `?rviplocks` untested in the browser.
+- **Stage 2 (Explore + stairs + no `--More--`): done.**
   - Full level generation (stage 2 remainder): `quickLevelGen = false` in
     `TraumaWorldGenerator.cs`. Upstream hang cause: with it false, the generic
     `GenerateStandardLevel` loop still ran over every level except medical

@@ -41,7 +41,7 @@ onmessage = async (e) => {
 		const rt = await dotnet.withConfig({ disableIntegrityCheck: true }).create();
 		rt.setModuleImports('trauma', imports);
 		postMessage({ t: 'started' });
-		await rt.runMain(rt.getConfig().mainAssemblyName, []);
+		await rt.runMain(rt.getConfig().mainAssemblyName, e.data.args || []);
 		postMessage({ t: 'exit' });
 	} catch (err) {
 		postMessage({ t: 'crash', msg: String(err && (err.stack || err.message) || err) });

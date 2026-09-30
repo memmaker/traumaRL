@@ -228,6 +228,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/PlayerEffects/ToHitUp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/RogueBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/AutoExplore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/RvipMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/RoomFilling.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/RoomRouting.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/RoomTemplateLoader.cs" />

@@ -49,7 +49,9 @@ namespace RogueBasin{
 				if(i > 0) sb.Append(',');
 				sb.Append('[').Append(t.x).Append(',').Append(t.y).Append(',').Append(t.rgb).Append(',').Append(Json(t.s)).Append(']');
 			}
-			sb.Append("]}");
+			sb.Append(']');
+			if(RogueBase.RvipMenuJson != null) sb.Append(",\"menu\":").Append(RogueBase.RvipMenuJson);
+			sb.Append('}');
 			string info = sb.ToString();
 			if(info == lastInfo && Cells.AsSpan().SequenceEqual(lastCells)) return;
 			lastInfo = info; Cells.CopyTo(lastCells, 0);

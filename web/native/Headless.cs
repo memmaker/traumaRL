@@ -1,5 +1,5 @@
 /* RVIP ASan substitute: runs TraumaRL natively, headless.
-   usage: TraumaNative [seed] [randomkeys]   (env SCRIPT = keys first: chars, ~ Enter, ` Escape, 8246 etc. are
+   usage: TraumaNative [seed] [randomkeys]   (env SCRIPT = keys first: chars, ~ Enter, ` Escape, } { arrow down/up, 8246 etc. are
    digits, _ no key for one tick; NOMON=1 removes monsters, MSGS=1 prints new messages; DUMP=1 prints the last screen; TRACE=1 prints each key). Keys come immediately, so every
    tick of the event loop gets one. Exit 0 = keys used up, 2 = crash. */
 using System;
@@ -21,6 +21,8 @@ namespace RogueBasin{
 			if(c == '_') return "_";
 			if(c == '~') return "Enter\tEnter\t";
 			if(c == '`') return "Escape\tEscape\t";
+			if(c == '}') return "ArrowDown\t\t"; if(c == '{') return "ArrowUp\t\t"; // RVIP menus
+			if(c == '}') return "ArrowDown\t\t"; if(c == '{') return "ArrowUp\t\t"; // RVIP menus
 			string code = char.IsLetter(c) ? "Key" + char.ToUpper(c) : char.IsDigit(c) ? "Digit" + c : c == '.' ? "Period" : c == ',' ? "Comma" : c == '/' ? "Slash" : c == ' ' ? "Space" : "";
 			return code + "\t" + c + "\t" + (char.IsUpper(c) || "<>?:!@#$%^&*()+".IndexOf(c) >= 0 ? "s" : "");
 		}
