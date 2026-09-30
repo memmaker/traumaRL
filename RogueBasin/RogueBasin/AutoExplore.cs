@@ -84,9 +84,13 @@ namespace RogueBasin
             Screen.Instance.NeedsUpdate = true;
         }
 
-        IEnumerable<Features.Elevator> AutoElevators()
+        IEnumerable<UseableFeature> AutoElevators()
         {
             var d = Game.Dungeon; var p = d.Player; var map = d.Levels[p.LocationLevel];
+            //the escape pod is the station's last exit: > walks to it once known
+            var pods = d.Features.OfType<Features.EscapePod>().Where(f => f.LocationLevel == p.LocationLevel
+                && map.mapSquares[f.LocationMap.x, f.LocationMap.y].SeenByPlayer).ToList();
+            if (autoMode == AutoMode.ExitDown && pods.Count > 0) return pods;
             var all = d.Features.OfType<Features.Elevator>().Where(f => f.LocationLevel == p.LocationLevel
                 && map.mapSquares[f.LocationMap.x, f.LocationMap.y].SeenByPlayer).ToList();
             IEnumerable<Features.Elevator> pref = autoMode == AutoMode.ExitUp ? all.Where(f => f.DestLevel < p.LocationLevel)
@@ -138,7 +142,7 @@ namespace RogueBasin
             var visited = autoVisited[lvl];
             visited.Add(p.LocationMap);
 
-            var elevators = autoMode == AutoMode.Explore ? new List<Features.Elevator>() : AutoElevators().ToList();
+            var elevators = autoMode == AutoMode.Explore ? new List<UseableFeature>() : AutoElevators().ToList();
             if (autoMode != AutoMode.Explore && elevators.Count == 0) { AutoStop("You don't know of an elevator on this level."); return false; }
             var elevatorCells = new HashSet<Point>(elevators.Select(e => e.LocationMap));
             if (elevatorCells.Any(e => Utility.GetDistanceBetween(e, p.LocationMap) < 1.5))
@@ -182,7 +186,7 @@ namespace RogueBasin
             {
                 var c = q.Dequeue();
                 if (c != start && isGoal(c.x, c.y)) { goal = c; break; }
-                if (c != start && (map.mapSquares[c.x, c.y].Terrain == MapTerrain.ClosedDoor || map.mapSquares[c.x, c.y].Terrain == MapTerrain.ClosedLock)) continue; // expand beyond after opening
+                if (autoMode == AutoMode.Explore && c != start && (map.mapSquares[c.x, c.y].Terrain == MapTerrain.ClosedDoor || map.mapSquares[c.x, c.y].Terrain == MapTerrain.ClosedLock)) continue; // explore: expand beyond after opening; elevator walk: plan through doors (bumping opens them)
                 for (int k = 0; k < 8; k++)
                 {
                     var n = new Point(c.x + adx[k], c.y + ady[k]);

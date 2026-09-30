@@ -623,7 +623,7 @@ namespace RogueBasin
                         }
 
 
-                        if (Game.Config.DebugMode || (RvipLockDebug && args.Key == Key.K)) //RVIP: ?rviplocks allows only Shift+K
+                        if (Game.Config.DebugMode || (RvipLockDebug && (args.Key == Key.K || args.Key == Key.V || args.Key == Key.C || args.Key == Key.U))) //RVIP test flag ?rviplocks: Shift+K locks, V reveal map, C heal, U weapons
                         {
                             if (args.Mod.HasFlag(ModifierKeys.LeftShift) || args.Mod.HasFlag(ModifierKeys.RightShift))
                             {
@@ -674,6 +674,7 @@ namespace RogueBasin
                                         //screen debug mode
                                         Screen.Instance.SeeAllMap = Screen.Instance.SeeAllMap ? false : true;
                                         Screen.Instance.SeeAllMonsters = Screen.Instance.SeeAllMonsters ? false : true;
+                                        foreach (var sq in Game.Dungeon.Levels[Game.Dungeon.Player.LocationLevel].mapSquares) sq.SeenByPlayer = true; //RVIP: known to explore / elevator walk too
                                         break;
 
                                     case Key.Y:
