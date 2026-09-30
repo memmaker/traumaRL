@@ -623,7 +623,7 @@ namespace RogueBasin
                         }
 
 
-                        if (Game.Config.DebugMode)
+                        if (Game.Config.DebugMode || (RvipLockDebug && args.Key == Key.K)) //RVIP: ?rviplocks allows only Shift+K
                         {
                             if (args.Mod.HasFlag(ModifierKeys.LeftShift) || args.Mod.HasFlag(ModifierKeys.RightShift))
                             {
