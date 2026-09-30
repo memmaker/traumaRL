@@ -2,6 +2,22 @@
 
 ## RVIP progress
 
+- **Stage 7 (Publish): done in the cloud, deploy pending locally.**
+  - Repo README: web-port header (upstream flend/roguelike `traumarl` @ `d429380`, compare link, play URL).
+  - roguelikes (branch `claude/traumarl-rvip-xj7ndq`): card (2014, after Prospector, no Info button until
+    the stage-8 shrine), `img/traumarl.png` (12×5 tiles from `web/shots/tiles16.png`, 2× nearest), `years.json`
+    `traumarl` 2014 + tree ids `ddrogue` 2009, `flatlinerl` 2013; tree: DDRogue (insp, root) → FlatlineRL →
+    TraumaRL (same git history: "DDRogue as release at the end of the 7DRL" 2009-03, flatlinerl 2013-03, trauma 2014-03).
+  - og block in `web/index.html` written by og.py (run for this game only; image = card image).
+  - **Local deploy steps** (Mac, `~/Games`):
+    1. `cd ~/Games/traumarl && git fetch && git checkout claude/traumarl-rvip-xj7ndq && git pull` (merge to main if wanted, push),
+       `sh web/build.sh`, then `web/deploy.sh`.
+    2. `cd ~/Games/roguelikes-index && git pull && git merge origin/claude/traumarl-rvip-xj7ndq && git push && ./deploy.sh`.
+    3. Checks:
+       `for f in index.html trauma.js worker.js help.html; do curl -s https://ruzzoli.de/roguelikes/traumarl/$f | md5; md5 -q web/dist/$f; done`
+       `curl -s https://ruzzoli.de/roguelikes/ | md5; md5 -q ~/Games/roguelikes-index/index.html`
+       `curl -s https://ruzzoli.de/roguelikes/img/traumarl.png | md5; md5 -q ~/Games/roguelikes-index/img/traumarl.png`
+       `curl -s https://ruzzoli.de/roguelikes/traumarl/ | grep og:image`; play one level in the browser.
 - **Stage 1 (Get + build): done.**
 - **Stage 6 (Docs and sound): done in the cloud.** Next: stage 7.
   - Help: `web/make-help.py` (self-contained, no Docs folder) → `dist/help.html`: key list parsed from
