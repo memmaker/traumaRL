@@ -58,7 +58,11 @@
     `/var/www/ruzzoli.de/roguelikes/traumarl/`), check live with `curl` + md5 vs `web/dist`.
   - Open: saves are slow (5–8 s freeze; a faster hand-written format would fix it); no help.html yet (Help shows a fallback, stage 6); no Visible
     window (the game has no such list); the map viewport stays the game's 37×27 (bigger windows
-    show black around it; enlarging `ViewableWidth/Height` for the web would fill them);
+    show black around it). Enlarging `ViewableWidth/Height` from the page was looked at and skipped
+    (not cheap): the map lives inside the fixed 60×45 cell buffer (`WebRenderer.Cols/Rows`) next to
+    `RvipStatsRect`, which the status pane reads, so a bigger map needs a bigger buffer (whole buffer is
+    posted every present), a map region moved clear of the status area, `TileMap` rebuilt on resize and
+    a separate layout for one-window mode (the game's own 60×35 screen);
     status sprites (hearts, ammo, weapon icons) are inline images of the sheet sprites, not glyphs;
     no Tiles/Font select for the map (tiles only, rule 8).
 - **Stage 4 (Tiles): done.**
