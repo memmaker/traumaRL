@@ -2,6 +2,16 @@
 
 ## RVIP progress
 
+- **Stage 8 (Shrine): done in the cloud, deploy pending locally.**
+  - roguelikes `shrine/traumarl.html` (template prospector.html), card Info button, tree ✦; game `#bar h1` title links to the shrine.
+  - Research: roguetemple.com, forums.roguetemple.com, shroomarts.blogspot.com blocked from the cloud; facts from
+    RogueBasin (via search), flend/roguelike README + git log, the code. **No manual and no written walkthrough found**
+    (only in-game help and a DFuxa Let's Play video). Worth a local look at the Temple 2014 evaluation / forum thread.
+  - Deploy: step 1+2 of stage 7 below (game `web/build.sh` + `web/deploy.sh`, index merge + `./deploy.sh`), then check:
+    `curl -s https://ruzzoli.de/roguelikes/shrine/traumarl.html | md5; md5 -q ~/Games/roguelikes-index/shrine/traumarl.html`,
+    `curl -s https://ruzzoli.de/roguelikes/ | grep -c shrine/traumarl` (2), `curl -s https://ruzzoli.de/roguelikes/traumarl/ | grep -c shrine/traumarl` (1);
+    view the shrine at 375 px (no horizontal scroll; not checked in the cloud).
+
 - **Stage 7 (Publish): done in the cloud, deploy pending locally.**
   - Repo README: web-port header (upstream flend/roguelike `traumarl` @ `d429380`, compare link, play URL).
   - roguelikes (branch `claude/traumarl-rvip-xj7ndq`): card (2014, after Prospector, no Info button until
