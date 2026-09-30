@@ -9,7 +9,7 @@ namespace RogueBasin
     /// <summary>
     /// Base class for Creatures.
     /// </summary>
-    public abstract class Creature : MapObject
+    [System.Serializable] public abstract class Creature : MapObject
     {
         /// <summary>
         /// The creature's inventory

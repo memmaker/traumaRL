@@ -10,7 +10,7 @@ namespace GraphMap
     /// <summary>
     /// Default dot engine implementation, writes dot code to disk
     /// </summary>
-    public sealed class FileDotEngine : IDotEngine
+    [System.Serializable] public sealed class FileDotEngine : IDotEngine
     {
         public string Run(GraphvizImageType imageType, string dot, string outputFileName)
         {

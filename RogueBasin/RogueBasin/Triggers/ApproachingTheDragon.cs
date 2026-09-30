@@ -7,7 +7,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// When you enter the entrance square
     /// </summary>
-    public class ApproachingTheDragon : DungeonSquareTrigger
+    [System.Serializable] public class ApproachingTheDragon : DungeonSquareTrigger
     {
 
         public ApproachingTheDragon()

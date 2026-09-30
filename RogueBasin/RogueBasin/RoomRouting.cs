@@ -22,7 +22,7 @@ namespace RogueBasin
     }
 
 
-    public class RoomRouting
+    [System.Serializable] public class RoomRouting
     {
         private RoomTemplate template;
         private Algorithms.IPathFinder pathFinding;

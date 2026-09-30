@@ -12,6 +12,10 @@ namespace RogueBasin{
 		[JSImport("waitKey","trauma")] internal static partial string JsWaitKey(int timeout_ms);
 		[JSImport("sleep","trauma")] internal static partial void JsSleep(int ms);
 		[JSImport("quit","trauma")] internal static partial void JsQuit();
+		[JSImport("storeFile","trauma")] internal static partial void JsStoreFile(string name,[JSMarshalAs<JSType.MemoryView>] Span<byte> data);
+		[JSImport("deleteFile","trauma")] internal static partial void JsDeleteFile(string name);
+		[JSImport("initialFile","trauma")] internal static partial byte[] JsInitialFile(string name); //null: none
+		public void FileChanged(string name){ if(File.Exists(name)) JsStoreFile(name, File.ReadAllBytes(name)); else JsDeleteFile(name); }
 		public string WaitKey(int ms){ return JsWaitKey(ms); }
 		public void Sleep(int ms){ JsSleep(ms); }
 		public void Present(int[] cells, string info){ JsPresent(cells, info); }
@@ -29,6 +33,8 @@ namespace RogueBasin{
 		public static void Main(string[] args){
 			RvipInput.Backend = new WebBackend();
 			Unpack();
+			byte[] sav = WebBackend.JsInitialFile(RvipSave.File); //the page read it from IndexedDB
+			if(sav != null && sav.Length > 0) File.WriteAllBytes(RvipSave.File, sav);
 			//RVIP debug (page URL ?rviplocks): Shift+K / menu entry toggles all locks open; off in normal play
 			if(Array.IndexOf(args, "rviplocks") >= 0) File.AppendAllText("config.txt", "\nrviplocks=true\n");
 			//sentinel for the Mono interpreter's T[,] store bug (the game swallows exceptions and retries level generation forever)

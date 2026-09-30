@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class ToHitUp : PlayerEffectSimpleDuration
+    [System.Serializable] public class ToHitUp : PlayerEffectSimpleDuration
     {
         public int duration  { get; set; }
 

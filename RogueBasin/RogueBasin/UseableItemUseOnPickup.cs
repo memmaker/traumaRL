@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    abstract public class UseableItemUseOnPickup : Item, IUseableItem
+    [System.Serializable] abstract public class UseableItemUseOnPickup : Item, IUseableItem
     {
         /// <summary>
         /// Applies the effect of the object

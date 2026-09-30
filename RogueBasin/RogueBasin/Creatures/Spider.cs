@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Medium threat, fights to the death. Fast.
     /// </summary>
-    public class Spider : MonsterFightAndRunAI
+    [System.Serializable] public class Spider : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 6;
         const int classMinHitpoints = 5;

@@ -8,7 +8,7 @@ namespace RogueBasin.Spells
     /// <summary>
     /// Penetrating magic attack
     /// </summary>
-    public class FireBall : Spell
+    [System.Serializable] public class FireBall : Spell
     {
         int spellRange = 2;
 

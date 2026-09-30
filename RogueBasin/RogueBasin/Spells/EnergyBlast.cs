@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Spells
 {
-    public class EnergyBlast : Spell
+    [System.Serializable] public class EnergyBlast : Spell
     {
         public override bool DoSpell(Point target)
         {

@@ -8,7 +8,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// Magic library
     /// </summary>
-    public class DockDoor : DungeonSquareTrigger
+    [System.Serializable] public class DockDoor : DungeonSquareTrigger
     {
 
         public DockDoor()

@@ -14,7 +14,7 @@ using SdlDotNet.Input;
 
 namespace RogueBasin
 {
-    public partial class RogueBase : IDisposable
+    [System.Serializable] public partial class RogueBase : IDisposable
     {
         DungeonMaker dungeonMaker = null;
         

@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class PotionDamUp : Item, IUseableItem
+    [System.Serializable] public class PotionDamUp : Item, IUseableItem
     {
         bool usedUp;
 

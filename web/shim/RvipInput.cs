@@ -10,8 +10,9 @@ namespace RogueBasin{
 		void Sleep(int ms);
 		void Present(int[] cells, string info);
 		void Quit();
+		void FileChanged(string name); //a persistent file was written or deleted (web: mirror to IndexedDB)
 	}
-	public class RvipKey{
+	[System.Serializable] public class RvipKey{
 		public string Code, KeyName; public bool Shift, Ctrl, Alt;
 		public char Char => KeyName.Length == 1 ? KeyName[0] : '\0';
 		static Key SdlKey(string code){
@@ -63,6 +64,7 @@ namespace RogueBasin{
 	}
 	public static class RvipInput{
 		public static IRvipBackend Backend;
+		public static bool InMainLoop; //Events.Run is waiting (not a modal screen)
 		public static int IdleWait = 40; //ms the event loop waits for a key between ticks
 		public static RvipKey NextKey(int ms){
 			while(true){
@@ -70,6 +72,7 @@ namespace RogueBasin{
 				if(string.IsNullOrEmpty(s)){ if(ms >= 0) return null; continue; }
 				string[] p = s.Split('\t');
 				if(p.Length < 3) continue;
+				if(p[0] == "RvipSave"){ if(InMainLoop) RvipSave.Request(); continue; } //the page asks (tab hidden / closed)
 				var k = new RvipKey{ Code = p[0], KeyName = p[1], Shift = p[2].Contains('s'), Ctrl = p[2].Contains('c'), Alt = p[2].Contains('a') };
 				if(k.Code == "ShiftLeft" || k.Code == "ShiftRight" || k.Code.StartsWith("Control") || k.Code.StartsWith("Alt") || k.Code.StartsWith("Meta")) continue;
 				return k;

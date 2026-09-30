@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin.Items
 {
-    public class BioWare : Item, IEquippableItem
+    [System.Serializable] public class BioWare : Item, IEquippableItem
     {
         public BioWare()
         {

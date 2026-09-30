@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    public sealed class TemplateRectangle : IEnumerable
+    [System.Serializable] public sealed class TemplateRectangle : IEnumerable
     {
         public readonly int Width;
         public readonly int Height;
@@ -62,7 +62,7 @@ namespace RogueBasin
         }
 
         //private enumerator class
-        private class MyEnumerator : IEnumerator
+        [System.Serializable] private class MyEnumerator : IEnumerator
         {
             private int iter_x;
             private int iter_y;

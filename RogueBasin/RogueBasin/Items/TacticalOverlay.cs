@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class TacticalOverlay : Item, IEquippableItem
+    [System.Serializable] public class TacticalOverlay : Item, IEquippableItem
     {
  
         /// <summary>

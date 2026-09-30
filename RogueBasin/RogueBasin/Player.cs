@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace RogueBasin
 {
-    public class Player : Creature
+    [System.Serializable] public class Player : Creature
     {
         /// <summary>
         /// Effects that are active on the player

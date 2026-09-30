@@ -13,7 +13,7 @@ namespace RogueBasin
     [System.Xml.Serialization.XmlInclude(typeof(Features.DockBay))]
     [System.Xml.Serialization.XmlInclude(typeof(Features.StaircaseEntry))]
     [System.Xml.Serialization.XmlInclude(typeof(Features.StaircaseExit))]
-    public abstract class Feature : MapObject
+    [System.Serializable] public abstract class Feature : MapObject
     {
 
         public Feature()

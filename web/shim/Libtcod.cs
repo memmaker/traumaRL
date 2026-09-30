@@ -7,7 +7,7 @@ namespace libtcodWrapper{
 	internal static class DLLName{ internal const string name = "libtcod"; }
 
 	/// FOV map (libtcod TCOD_map_*): recursive shadow casting, walls lit, radius 0 = unlimited.
-	public class TCODFov : IDisposable{
+	[System.Serializable] public class TCODFov : IDisposable{
 		internal readonly int w, h;
 		internal readonly bool[] transparent, walkable, fov;
 		public TCODFov(int width, int height){ w = width; h = height; transparent = new bool[w*h]; walkable = new bool[w*h]; fov = new bool[w*h]; }
@@ -55,7 +55,7 @@ namespace libtcodWrapper{
 	public delegate float TCODPathCallback(int xFrom, int yFrom, int xTo, int yTo);
 
 	/// A* (libtcod TCOD_path_*): 8 directions, diagonal cost, path excludes the origin.
-	public class TCODPathFinding : IDisposable{
+	[System.Serializable] public class TCODPathFinding : IDisposable{
 		readonly int w, h; readonly double diag; readonly TCODFov map; readonly TCODPathCallback cb;
 		int ox, oy, dx, dy; List<int> path = new List<int>(); //steps origin->dest, popped from the front
 		int head;
@@ -144,7 +144,7 @@ namespace libtcodWrapper{
 		}
 	}
 
-	public struct KeyPress{
+	[System.Serializable] public struct KeyPress{
 		KeyCode keyCode; byte character; bool shift, ctrl, alt, pressed;
 		public KeyPress(KeyCode code, byte ch, bool shift, bool ctrl, bool alt){ keyCode = code; character = ch; this.shift = shift; this.ctrl = ctrl; this.alt = alt; pressed = code != KeyCode.TCODK_NONE; }
 		public KeyCode KeyCode => keyCode;
@@ -172,7 +172,7 @@ namespace libtcodWrapper{
 		public static void Sleep(uint milliseconds){ RogueBasin.RvipInput.Sleep((int)milliseconds); }
 	}
 
-	public class CustomFontRequest{ public CustomFontRequest(string fontFile, int w, int h, CustomFontRequestFontTypes type){} }
+	[System.Serializable] public class CustomFontRequest{ public CustomFontRequest(string fontFile, int w, int h, CustomFontRequestFontTypes type){} }
 	public class Background{
 		public static readonly Background None = new Background(BackgroundFlag.None);
 		public static readonly Background Set = new Background(BackgroundFlag.Set);
@@ -181,7 +181,7 @@ namespace libtcodWrapper{
 	}
 
 	/// Root console: TraumaRL draws through IMapRenderer; these calls are unused leftovers (intro, fullscreen) and go nowhere.
-	public class Console : IDisposable{
+	[System.Serializable] public class Console : IDisposable{
 		public void Dispose(){}
 		public Color ForegroundColor{ get; set; }
 		public Color BackgroundColor{ get; set; }
@@ -197,7 +197,7 @@ namespace libtcodWrapper{
 		public void SetCharBackground(int x, int y, Color c){} public void SetCharForeground(int x, int y, Color c){}
 		public void Blit(int xs, int ys, int ws, int hs, Console d, int xd, int yd){}
 	}
-	public class RootConsole : Console{
+	[System.Serializable] public class RootConsole : Console{
 		static RootConsole inst = new RootConsole();
 		public static RootConsole GetInstance(){ return inst; }
 		public static int Width{ get; set; } public static int Height{ get; set; }

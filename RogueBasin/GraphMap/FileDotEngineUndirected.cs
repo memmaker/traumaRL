@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GraphMap
 {
-    public sealed class FileDotEngineUndirected : IDotEngine
+    [System.Serializable] public sealed class FileDotEngineUndirected : IDotEngine
     {
         public string Run(GraphvizImageType imageType, string dot, string outputFileName)
         {

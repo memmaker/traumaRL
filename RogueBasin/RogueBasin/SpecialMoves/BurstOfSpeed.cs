@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.SpecialMoves
 {
-    public class BurstOfSpeed : SpecialMove
+    [System.Serializable] public class BurstOfSpeed : SpecialMove
     {
         //Really private, accessors for serialization only
 

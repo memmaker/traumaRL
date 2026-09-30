@@ -8,7 +8,7 @@ namespace libtcodWrapper
     /// Represents a 32-bit color to the TCOD API.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct Color
+    [System.Serializable] public struct Color
     {
         private byte r;
         /// <summary>

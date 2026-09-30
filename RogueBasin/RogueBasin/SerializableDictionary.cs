@@ -12,7 +12,7 @@ namespace RogueBasin
 
     [XmlRoot("dictionary")]
 
-    public class SerializableDictionary<TKey, TValue>
+    [System.Serializable] public class SerializableDictionary<TKey, TValue>
 
         : Dictionary<TKey, TValue>, IXmlSerializable
     {

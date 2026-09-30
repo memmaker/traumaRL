@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class SeeFOV : PlayerEffectSimpleDuration
+    [System.Serializable] public class SeeFOV : PlayerEffectSimpleDuration
     {
         public int duration { get; set; }
 

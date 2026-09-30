@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// Class for training stats. Works like a dialog, run the function then query the state for what happened. Does however make changes to player
     /// </summary>
-    public class TrainStats
+    [System.Serializable] public class TrainStats
     {
         /// <summary>
         /// Should be set before any stat raising takes place

@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class Fists : Item, IEquippableItem
+    [System.Serializable] public class Fists : Item, IEquippableItem
     {
  
         /// <summary>

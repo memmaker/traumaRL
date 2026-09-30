@@ -8,7 +8,7 @@ namespace RogueBasin.Spells
     /// <summary>
     /// Teleports to a nearby location
     /// </summary>
-    public class Light : Spell
+    [System.Serializable] public class Light : Spell
     {
         
         public override bool DoSpell(Point target)

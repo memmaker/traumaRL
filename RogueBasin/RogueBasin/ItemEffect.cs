@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// Represents a creature event that has a duration in the game.
     /// </summary>
-    public abstract class ItemEffect
+    [System.Serializable] public abstract class ItemEffect
     {
 
         public ItemEffect()

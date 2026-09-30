@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// The kind of feature everyone wants to interact with
     /// </summary>
-    public abstract class UseableFeature : Feature
+    [System.Serializable] public abstract class UseableFeature : Feature
     {
         /// <summary>
         /// Process a player interacting with this object

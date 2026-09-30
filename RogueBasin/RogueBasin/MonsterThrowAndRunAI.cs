@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin
 {
-    public abstract class MonsterThrowAndRunAI : MonsterSimpleThrowingAI
+    [System.Serializable] public abstract class MonsterThrowAndRunAI : MonsterSimpleThrowingAI
     {
 
         /// <summary>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RogueBasin.Features
 {
-    public class SimpleObjective : UseableFeature
+    [System.Serializable] public class SimpleObjective : UseableFeature
     {
         protected GraphMap.Objective obj;
         protected bool isComplete;

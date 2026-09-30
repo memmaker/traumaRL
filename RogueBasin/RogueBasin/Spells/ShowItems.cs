@@ -8,7 +8,7 @@ namespace RogueBasin.Spells
     /// <summary>
     /// Reveals the location of items on this level
     /// </summary>
-    public class ShowItems : Spell
+    [System.Serializable] public class ShowItems : Spell
     {
         public override bool DoSpell(Point target)
         {

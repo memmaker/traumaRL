@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// Monster doesn't do anything
     /// </summary>
-    public abstract class MonsterNullAI : Monster
+    [System.Serializable] public abstract class MonsterNullAI : Monster
     {
         public MonsterNullAI()
         {

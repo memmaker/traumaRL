@@ -8,9 +8,10 @@ using System.IO;
 using System.Linq;
 namespace RogueBasin{
 	class Headless : IRvipBackend{
-		Random rng; int left; Queue<string> script = new Queue<string>();
+		Random rng; int left; int saveTries; bool savedNow; DateTime started = DateTime.UtcNow; Queue<string> script = new Queue<string>();
 		public int[] last; public string lastInfo = ""; public int presents;
 		static readonly string pool = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>.,;:?/!@#$%^&*()-=+[]";
+		static readonly string Pool = Environment.GetEnvironmentVariable("NOQUIT") != null ? pool.Replace("Q", "") : pool; // NOQUIT=1: no Q (quit) key
 		static readonly string[] specials = {"ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Numpad1","Numpad2","Numpad3","Numpad4","Numpad5","Numpad6","Numpad7","Numpad8","Numpad9","Enter","Escape","Space"};
 		public Headless(int seed, int keys){
 			rng = new Random(seed); left = keys;
@@ -29,7 +30,14 @@ namespace RogueBasin{
 		public string WaitKey(int ms){
 			string k;
 			if(script.Count > 0){ k = script.Dequeue(); if(k == "_") return ""; } // '_' = no key this tick (lets explore run)
-			else if(left-- > 0) k = rng.Next(4) == 0 ? specials[rng.Next(specials.Length)] + "\t\t" : K(pool[rng.Next(pool.Length)]);
+			else if(left-- > 0) k = rng.Next(4) == 0 ? specials[rng.Next(specials.Length)] + "\t\t" : K(Pool[rng.Next(Pool.Length)]);
+			else if(Environment.GetEnvironmentVariable("SAVE") != null && saveTries++ < 400 && !savedNow){ // save test: get back to the map, then ask for a save
+				if(saveTries % 2 == 1) return "Escape\t\t";
+				if(saveTries < 6) Console.WriteLine("try " + Game.Base.RvipAtCmd + " " + Game.Base.RvipCanSave + " main " + RvipInput.InMainLoop); RvipSave.Request(); if(File.Exists(RvipSave.File) && new FileInfo(RvipSave.File).LastWriteTimeUtc > started){ savedNow = true;
+					if(Environment.GetEnvironmentVariable("RT") != null){ var d = Game.Dungeon; Console.WriteLine("rt random " + RvipSave.RoundTrip(Game.Random)); Console.WriteLine("levels " + d.Levels.Count); FieldSurrogate.Stats = new Dictionary<string,int>(); var sw = System.Diagnostics.Stopwatch.StartNew(); RvipSave.RoundTrip(new object[]{ d, Game.MessageQueue, Game.Random }); Console.WriteLine("rt all ms " + sw.ElapsedMilliseconds); foreach(var kv in FieldSurrogate.Stats.OrderByDescending(x => x.Value).Take(8)) Console.WriteLine("surr " + kv.Value + " " + kv.Key); FieldSurrogate.Stats = null; foreach(var lf in typeof(Map).GetFields(System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.NonPublic)){ var lv = lf.GetValue(d.Levels[0]); if(lv != null) Console.WriteLine("rt L0." + lf.Name + " " + RvipSave.RoundTrip(lv)); } Console.WriteLine("rt mq " + RvipSave.RoundTrip(Game.MessageQueue)); foreach(var f in typeof(Dungeon).GetFields(System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.NonPublic)){ var v = f.GetValue(d); if(v != null){ var r = RvipSave.RoundTrip(v); Console.WriteLine("rt " + f.Name + " " + r); if(!r.StartsWith("ok")) Drill(v, f.Name, 0); } } }
+					Console.WriteLine("SAVED after " + saveTries + " " + Fingerprint()); }
+				return "";
+			}
 			else{ Finish(0); return ""; }
 			if(Environment.GetEnvironmentVariable("TRACE") != null) Console.WriteLine("KEY " + k.Replace('\t', ' '));
 			return k;
@@ -39,6 +47,7 @@ namespace RogueBasin{
 		public void Present(int[] cells, string info){
 			if(Environment.GetEnvironmentVariable("NOMON") != null && Game.Dungeon?.Monsters != null) { Game.Dungeon.Monsters.Clear(); Game.Dungeon.AllLocksOpen = Environment.GetEnvironmentVariable("OPEN") != null; } // explore test: no monster stops
 			if(Environment.GetEnvironmentVariable("MSGS") != null){ int i = info.IndexOf("[2,1,"); string m = i < 0 ? "" : info.Substring(i); if(m != lastMsg && m != ""){ Console.WriteLine("MSG " + (Game.Dungeon?.Player?.LocationMap) + " " + m); } lastMsg = m; }
+			if(presents == 0 && Environment.GetEnvironmentVariable("LOADFP") != null) Console.WriteLine("LOADED " + Fingerprint());
 			last = (int[])cells.Clone(); lastInfo = info; presents++;
 			if(Environment.GetEnvironmentVariable("COVER") != null && Game.Dungeon?.Player != null) Cover(); }
 		/// RVIP stage 4: sprite coverage. Sprite id = Representation (a char); ids < 256 are the sheet's CP437 glyph rows,
@@ -67,7 +76,22 @@ namespace RogueBasin{
 			Finish(0);
 		}
 		public void Quit(){ Finish(0); }
+		static void Drill(object o, string path, int depth){
+			var fs = new List<System.Reflection.FieldInfo>();
+			for(var t = o.GetType(); t != null; t = t.BaseType) fs.AddRange(t.GetFields(System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.DeclaredOnly));
+			bool any = false;
+			foreach(var f in fs){ var v = f.GetValue(o); if(v == null || v.GetType().IsPrimitive || v is string) continue; var r = RvipSave.RoundTrip(v); if(!r.StartsWith("ok")){ any = true; Console.WriteLine("  bad " + path + "." + f.Name + " : " + v.GetType() + " " + r); if(depth < 6) Drill(v, path + "." + f.Name, depth + 1); } }
+			if(!any) Console.WriteLine("  LEAF " + path + " " + o.GetType());
+		}
+		/// Same run? hero name/level/position/hp, turn, monster/item counts, hash of the current level's terrain + seen cells.
+		public static string Fingerprint(){
+			var d = Game.Dungeon; var p = d.Player; var m = d.Levels[p.LocationLevel]; int h = 17;
+			for(int x = 0; x < m.width; x++) for(int y = 0; y < m.height; y++){ h = h * 31 + (int)m.mapSquares[x, y].Terrain; h = h * 3 + (m.mapSquares[x, y].SeenByPlayer ? 1 : 0); }
+			return "fp " + p.Name + " L" + p.LocationLevel + " " + p.LocationMap + " hp" + p.Hitpoints + " mon" + d.Monsters.Count + " items" + d.Items.Count + " locks" + d.Locks.Count + " map" + h.ToString("x");
+		}
+		public void FileChanged(string name){ Console.WriteLine("FILE " + name + (File.Exists(name) ? " " + new FileInfo(name).Length : " deleted")); }
 		public void Finish(int rc){
+			if(Game.Dungeon != null && Game.Dungeon.Player != null) try{ Console.WriteLine(Fingerprint()); }catch{}
 			Console.WriteLine("presents " + presents + " rc " + rc + (Game.Dungeon != null && Game.Dungeon.Player != null ? " level " + Game.Dungeon.Player.LocationLevel + " at " + Game.Dungeon.Player.LocationMap + " hp " + Game.Dungeon.Player.Hitpoints : ""));
 			if(Environment.GetEnvironmentVariable("DUMP") != null) Console.WriteLine(Dump());
 			if(Environment.GetEnvironmentVariable("NOMON") != null && Game.Dungeon?.Player != null){ var m = Game.Dungeon.Levels[Game.Dungeon.Player.LocationLevel]; int w = 0, sn = 0, lk = 0; for(int x = 0; x < m.width; x++) for(int y = 0; y < m.height; y++){ var q = m.mapSquares[x, y]; if(q.Walkable){ w++; if(q.SeenByPlayer) sn++; } if(q.Terrain == MapTerrain.ClosedLock) lk++; } foreach(var kv in Game.Dungeon.Locks) if(kv.Key.Level == Game.Dungeon.Player.LocationLevel) foreach(var l in kv.Value) Console.WriteLine("lock " + kv.Key.MapCoord + " " + l.GetType().Name + " open " + l.IsOpen() + " seen " + m.mapSquares[kv.Key.MapCoord.x, kv.Key.MapCoord.y].SeenByPlayer); Console.WriteLine("walkable seen " + sn + "/" + w + " locks " + lk + " elevators " + string.Join(",", Game.Dungeon.Features.OfType<Features.Elevator>().Where(e => e.LocationLevel == Game.Dungeon.Player.LocationLevel).Select(e => e.LocationMap + "->" + e.DestLevel + " seen " + m.mapSquares[e.LocationMap.x, e.LocationMap.y].SeenByPlayer))); }

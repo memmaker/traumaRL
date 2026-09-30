@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Low threat. Stupid missile troop.
     /// </summary>
-    public class Goblin : MonsterThrowAndRunAI
+    [System.Serializable] public class Goblin : MonsterThrowAndRunAI
     {
         const int classDeltaHitpoints = 5;
         const int classMinHitpoints = 5;

@@ -7,7 +7,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.LibTCOD
 {
-    public class TCODFovWrapper : Algorithms.IFieldOfView
+    [System.Serializable] public class TCODFovWrapper : Algorithms.IFieldOfView
     {
         public class WidthHeight {
             public readonly int width;

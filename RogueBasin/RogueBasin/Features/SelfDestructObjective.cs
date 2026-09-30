@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin.Features
 {
-    public class SelfDestructObjective : SimpleObjective
+    [System.Serializable] public class SelfDestructObjective : SimpleObjective
     {
         public SelfDestructObjective(GraphMap.Objective objective, IEnumerable<Clue> objectiveProducesClues)
             : base(objective, objectiveProducesClues)

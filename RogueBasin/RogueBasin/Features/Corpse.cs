@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RogueBasin.Features
 {
-    public class Corpse : DecorationFeature
+    [System.Serializable] public class Corpse : DecorationFeature
     {
         char representation;
         System.Drawing.Color representationColor;

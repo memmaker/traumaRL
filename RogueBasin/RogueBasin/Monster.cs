@@ -75,7 +75,7 @@ namespace RogueBasin
     [System.Xml.Serialization.XmlInclude(typeof(Creatures.RollingBomb))]
     [System.Xml.Serialization.XmlInclude(typeof(Creatures.Juggernaut))]
     [System.Xml.Serialization.XmlInclude(typeof(Creatures.CombatBot))]
-    public abstract class Monster : Creature, ITurnAI
+    [System.Serializable] public abstract class Monster : Creature, ITurnAI
     {
         /// <summary>
         /// Effects current active on this monster

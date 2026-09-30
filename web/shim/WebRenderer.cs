@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 namespace RogueBasin{
-	class MapRendererSDLDotNet : IMapRenderer{
+	[System.Serializable] class MapRendererSDLDotNet : IMapRenderer{
 		public const int Cols = 60, Rows = 45, LAYERS = 4, CELL = 1 + LAYERS * 3; //count, then (id, fg, bg) per layer
 		public static readonly int[] Cells = new int[Cols * Rows * CELL];
 		readonly List<(int x, int y, int rgb, string s)> texts = new List<(int, int, int, string)>();
@@ -115,6 +115,7 @@ namespace RogueBasin{
 			}
 			if(Game.Base != null){
 				sb.Append(",\"atCmd\":").Append(Game.Base.RvipAtCmd && !full ? 1 : 0);
+				sb.Append(",\"unsaved\":").Append(RvipSave.Unsaved ? 1 : 0);
 				string inv = "[]"; try{ inv = Game.Base.RvipInventoryJson(); } catch(Exception){ }
 				sb.Append(",\"inv\":").Append(inv);
 			}

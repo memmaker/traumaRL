@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Rotating turret. Can't move, but will attack when in player in FOV.
     /// </summary>
-    public class HeavyTurret : MonsterThrowAndRunAI
+    [System.Serializable] public class HeavyTurret : MonsterThrowAndRunAI
     {
 
         public HeavyTurret()

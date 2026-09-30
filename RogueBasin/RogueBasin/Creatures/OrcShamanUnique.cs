@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Healer. Quite clever missile troop
     /// </summary>
-    public class OrcShamanUnique : MonsterSpecialAI
+    [System.Serializable] public class OrcShamanUnique : MonsterSpecialAI
     {
         const int classDeltaHitpoints = 12;
         const int classMinHitpoints = 25;

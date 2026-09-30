@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RogueBasin.ItemEffects
 {
-    class Decay : ItemEffectSimpleDuration
+    [System.Serializable] class Decay : ItemEffectSimpleDuration
     {
         int duration;
 

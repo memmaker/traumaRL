@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GraphMap
 {
     /** Provides a sanitize interface to a node map */
-    public class ConnectivityMap
+    [System.Serializable] public class ConnectivityMap
     {
         /// <summary>
         /// Input map, may contain cycles

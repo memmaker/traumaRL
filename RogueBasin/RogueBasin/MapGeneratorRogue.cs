@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    class RogueRoom
+    [System.Serializable] class RogueRoom
     {
         public bool connected = false;
         public List<int> connectedTo;
@@ -23,7 +23,7 @@ namespace RogueBasin
 
     }
 
-    class MapGeneratorRogue
+    [System.Serializable] class MapGeneratorRogue
     {
 
         int width = 60;

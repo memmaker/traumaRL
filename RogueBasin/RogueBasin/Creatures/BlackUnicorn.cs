@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Moderate tough
     /// </summary>
-    public class BlackUnicorn : MonsterFightAndRunAI
+    [System.Serializable] public class BlackUnicorn : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 10;
         const int classMinHitpoints = 10;

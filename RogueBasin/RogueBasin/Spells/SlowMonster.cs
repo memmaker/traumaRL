@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Spells
 {
-    public class SlowMonster : Spell
+    [System.Serializable] public class SlowMonster : Spell
     {
         public override bool DoSpell(Point target)
         {

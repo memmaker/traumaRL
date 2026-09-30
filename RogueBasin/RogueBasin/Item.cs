@@ -41,7 +41,7 @@ namespace RogueBasin
     [System.Xml.Serialization.XmlInclude(typeof(Items.NanoRepair))]
     [System.Xml.Serialization.XmlInclude(typeof(Items.TacticalOverlay))]
     [System.Xml.Serialization.XmlInclude(typeof(Items.StealthCloak))]
-    public abstract class Item : MapObject
+    [System.Serializable] public abstract class Item : MapObject
     {
         System.Drawing.Color defaultItemColor = System.Drawing.Color.Red;
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class SightRadiusDown : PlayerEffectSimpleDuration
+    [System.Serializable] public class SightRadiusDown : PlayerEffectSimpleDuration
     {
         int duration  { get; set; }
 

@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Low threat, sleeps until attacked, can't move
     /// </summary>
-    public class Mushroom : MonsterFightAndRunAI
+    [System.Serializable] public class Mushroom : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 10;
         const int classMinHitpoints = 5;

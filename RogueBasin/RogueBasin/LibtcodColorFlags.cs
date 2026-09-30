@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    class LibtcodColorFlags : TileEngine.TileFlags
+    [System.Serializable] class LibtcodColorFlags : TileEngine.TileFlags
     {
         Color foregroundColor;
         Color backgroundColor;

@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Slower. Quite clever missile troop
     /// </summary>
-    public class Nymph : MonsterSpecialAI
+    [System.Serializable] public class Nymph : MonsterSpecialAI
     {
         const int classDeltaHitpoints = 5;
         const int classMinHitpoints = 10;

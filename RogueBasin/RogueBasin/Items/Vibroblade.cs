@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class Vibroblade : Item, IEquippableItem
+    [System.Serializable] public class Vibroblade : Item, IEquippableItem
     {
  
         /// <summary>

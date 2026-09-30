@@ -7,7 +7,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// When you enter the entrance square
     /// </summary>
-    public class SeeCorpses : DungeonSquareTrigger
+    [System.Serializable] public class SeeCorpses : DungeonSquareTrigger
     {
 
         public SeeCorpses()

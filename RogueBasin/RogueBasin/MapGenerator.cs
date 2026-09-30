@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    public class RoomCoords
+    [System.Serializable] public class RoomCoords
     {
         public int RoomX { get; set; }
         public int RoomY { get; set; }
@@ -58,7 +58,7 @@ namespace RogueBasin
     }
 
 
-    public class PointInRoom {
+    [System.Serializable] public class PointInRoom {
 
         public int X { get; set; }
         public int Y { get; set; }
@@ -98,7 +98,7 @@ namespace RogueBasin
         }
     }
 
-    public class CreaturePatrol
+    [System.Serializable] public class CreaturePatrol
     {
         public Point StartPos { get; set; }
         public RoomCoords StartRoom { get; set; }
@@ -123,7 +123,7 @@ namespace RogueBasin
     /// All random generators in FlatlineRL should return this, so that we can intelligently place creatures etc.
     /// </summary>
     [System.Xml.Serialization.XmlInclude(typeof(MapGeneratorBSP))]
-    public abstract class MapGenerator
+    [System.Serializable] public abstract class MapGenerator
     {
         /// <summary>
         /// Returns a random point in a room and a description of the room

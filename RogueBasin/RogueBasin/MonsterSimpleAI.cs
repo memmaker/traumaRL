@@ -9,7 +9,7 @@ namespace RogueBasin
     /// <summary>
     /// Simple AI. Currently no monsters implement this. So it's not fully implemented.
     /// </summary>
-    public abstract class MonsterSimpleAI : Monster
+    [System.Serializable] public abstract class MonsterSimpleAI : Monster
     {
         public SimpleAIStates AIState {get; set;}
         [XmlIgnore]

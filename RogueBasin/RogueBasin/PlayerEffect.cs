@@ -21,7 +21,7 @@ namespace RogueBasin
     [System.Xml.Serialization.XmlInclude(typeof(PlayerEffects.MPRestore))]
     [System.Xml.Serialization.XmlInclude(typeof(PlayerEffects.SeeFOV))]
     [System.Xml.Serialization.XmlInclude(typeof(PlayerEffects.StealthField))]
-    public abstract class PlayerEffect
+    [System.Serializable] public abstract class PlayerEffect
     {
         public PlayerEffect()
         {

@@ -9,7 +9,7 @@ using System.Text;
 namespace RogueBasin
 {
 
-    public class MapGeneratorTemplated
+    [System.Serializable] public class MapGeneratorTemplated
     {
         /// <summary>
         /// Mapping from template terrain to real terrain on the map

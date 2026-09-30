@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Patrolling Robot. Will not break off patrol but will fire at enemies within FOV
     /// </summary>
-    public class PerimeterBot : MonsterThrowAndRunAI
+    [System.Serializable] public class PerimeterBot : MonsterThrowAndRunAI
     {
         const int classDeltaHitpoints = 4;
         const int classMinHitpoints = 1;

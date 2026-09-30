@@ -7,7 +7,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// When you enter the entrance square
     /// </summary>
-    public class SpotFriend : DungeonSquareTrigger
+    [System.Serializable] public class SpotFriend : DungeonSquareTrigger
     {
 
         public SpotFriend()

@@ -8,7 +8,7 @@ namespace RogueBasin
     /// <summary>
     /// An effect that needs to be explicitally added and removed
     /// </summary>
-    public abstract class PlayerEffectNoDuration : PlayerEffect
+    [System.Serializable] public abstract class PlayerEffectNoDuration : PlayerEffect
     {
         public PlayerEffectNoDuration()
         {

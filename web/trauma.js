@@ -8,8 +8,12 @@
  * lays the windows out (../rvip-wm.js), draws sprites from TraumaSprites.png
  * (white -> fg, magenta -> bg, nearest-neighbour), forwards keys and keeps its
  * settings in its own IndexedDB database ('/traumarl/files'; no localStorage).
- * TraumaRL has no save games (upstream's XmlSerializer save is dead code), so a
- * reload starts a new station; the layout and sizes survive.
+ * One save slot (traumarl.sav, the game's whole state written by C# RvipSave): the
+ * page asks for it when the tab is hidden and on leaving (only at the command
+ * prompt, only if time moved), keeps it in the same database and hands it to the
+ * worker on load (resume). The game deletes it at death or victory. A save takes
+ * ~5 s in the wasm interpreter, so there is no timed autosave; leaving with an
+ * unsaved run shows the browser's "Leave site?" and saves meanwhile (Stay = kept).
  */
 const SLOT = 48, NSLOT = 64, SPR = 16;   /* sheet sprite size: TraumaSprites.png as shipped, never pre-scaled */
 /* map cell size: whole multiples of the 16 px sprite only (RVIP 5.8), A−/A+ on the Map title bar.
@@ -21,16 +25,23 @@ const DB = RvipApp.dir + '/files';
 const $ = id => document.getElementById(id);
 const hex = c => '#' + (c & 0xffffff).toString(16).padStart(6, '0');
 let worker, ring, db, scr = null, info = { texts: [] }, dirty = false, sheet, sheetData, ended = false;
-let wm = null, L = { wm: null, face: '' }, saveT = 0;
+let onStored = null, wm = null, L = { wm: null, face: '' }, saveT = 0;
 const cache = new Map(), icons = new Map();
 
+const SAV = 'traumarl.sav';
 const app = RvipApp({
 	name: 'traumarl',
-	save: () => null,
-	clear: () => {},
-	put: () => 'TraumaRL has no save files to import.',
-	noSave: 'TraumaRL has no save files: every run is one sitting.',
-	newGame: () => { if (confirm('Abandon this run and start a new station?')) { app.running = false; location.reload(); } },
+	save: async () => (await getFile(SAV)) ? SAV : null,
+	read: name => getFile(name),
+	clear: () => delFile(SAV),
+	put: (file, data) => putFile(SAV, data),
+	flush: done => {   /* Export: save the current state first (the game answers with a store, ~5 s) */
+		if (!info.unsaved || !info.atCmd) { done(); return; }
+		const t = setTimeout(() => { onStored = null; done(); }, 20000);
+		onStored = () => { clearTimeout(t); onStored = null; done(); };
+		app.status('Saving the run…'); requestSave();
+	},
+	noSave: 'No saved run yet: the game saves when the tab is hidden or closed.',
 	helpText: 'Press ? in the game for its key help; Enter opens the command menu.'
 });
 
@@ -65,6 +76,9 @@ function tx(mode, f) {
 }
 const putFile = (name, data) => tx('readwrite', s => s.put(data, name));
 const getFile = name => tx('readonly', s => s.get(name));
+const delFile = name => tx('readwrite', s => s.delete(name));
+/* the game saves only at its command prompt and only if time moved (C# RvipSave.Request) */
+function requestSave() { if (ring && app.running && !ended) sendKey('RvipSave', '', ''); }
 function saveLayout(now) {
 	clearTimeout(saveT);
 	const w = () => putFile('web-layout.json', new TextEncoder().encode(JSON.stringify(L))).catch(() => {});
@@ -285,13 +299,22 @@ async function main() {
 			if (!app.running && !ended) { app.running = window.trauma.running = true; app.status(''); $('game').hidden = false; wm.apply(); }
 			update(info); redraw();
 		}
-		else if (m.t === 'started') app.status('Generating the station…');
+		else if (m.t === 'started') app.status(sav ? 'Loading the saved run…' : 'Generating the station…');
 		else if (m.t === 'crash') { app.crashed(new Error(m.msg.split('\n')[0])); console.error(m.msg); }
+		else if (m.t === 'store') putFile(m.name, m.data).then(() => { app.status(''); if (onStored) onStored(); }).catch(err => app.status('Saving to browser storage (IndexedDB) failed: ' + err, true));
+		else if (m.t === 'delete') delFile(m.name).catch(() => {});
 		else if (m.t === 'quit' || m.t === 'exit') gameOver();
 	};
-	worker.postMessage({ t: 'init', ring: ring.buffer, args: new URLSearchParams(location.search).has('rviplocks') ? ['rviplocks'] : [] });
+	const files = {}, sav = await getFile(SAV).catch(() => null);
+	if (sav) files[SAV] = new Uint8Array(sav);
+	worker.postMessage({ t: 'init', ring: ring.buffer, files, args: new URLSearchParams(location.search).has('rviplocks') ? ['rviplocks'] : [] });
 	window.addEventListener('keydown', onKey);
-	window.addEventListener('beforeunload', e => { if (app.running) { e.preventDefault(); e.returnValue = ''; } });
-	window.addEventListener('pagehide', () => saveLayout(true));
+	document.addEventListener('visibilitychange', () => { if (document.hidden) requestSave(); });
+	window.addEventListener('beforeunload', e => {
+		if (!app.running || ended || !info.unsaved) return;
+		requestSave(); app.status('Saving the run…');
+		e.preventDefault(); e.returnValue = '';
+	});
+	window.addEventListener('pagehide', () => { requestSave(); saveLayout(true); });
 }
 main();

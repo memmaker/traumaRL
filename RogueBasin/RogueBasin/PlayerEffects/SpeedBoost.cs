@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class SpeedBoost : PlayerEffectNoDuration
+    [System.Serializable] public class SpeedBoost : PlayerEffectNoDuration
     {
         public int duration { get; set; }
 

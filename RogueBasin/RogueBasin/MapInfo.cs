@@ -10,7 +10,7 @@ namespace RogueBasin
     /// <summary>
     /// Info about a door's location. We don't know the levelNo when this is created in TemplatedMapGenerator
     /// </summary>
-    public class DoorLocationInfo
+    [System.Serializable] public class DoorLocationInfo
     {
         public Point MapLocation { get; private set; }
         public int LevelNo { get; private set; }
@@ -27,7 +27,7 @@ namespace RogueBasin
     /// <summary>
     /// Class that constructs the full map out of discrete level graphs and room sets
     /// </summary>
-    public class MapInfoBuilder
+    [System.Serializable] public class MapInfoBuilder
     {
         Dictionary<int, TemplatePositioned> roomTemplates;
         Dictionary<Connection, DoorLocationInfo> doors;
@@ -135,7 +135,7 @@ namespace RogueBasin
     /// <summary>
     /// Holds state about the multi-level map
     /// </summary>
-    public class MapInfo
+    [System.Serializable] public class MapInfo
     {
         Dictionary<int, TemplatePositioned> rooms;
         Dictionary<int, int> roomToLevelMapping;

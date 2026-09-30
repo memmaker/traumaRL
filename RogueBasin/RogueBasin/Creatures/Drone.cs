@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Chasing monster that doesn't attack and can be used as a shield???
     /// </summary>
-    public class Drone : MonsterThrowAndRunAI
+    [System.Serializable] public class Drone : MonsterThrowAndRunAI
     {
         const int classDeltaHitpoints = 5;
         const int classMinHitpoints = 5;

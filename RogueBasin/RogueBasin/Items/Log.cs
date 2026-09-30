@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin.Items
 {
-    public class Log : Item, IUseableItem
+    [System.Serializable] public class Log : Item, IUseableItem
     {
         LogEntry logEntry;
 

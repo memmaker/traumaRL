@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.Items
 {
-    public class PotionMajSpeedUp : Item, IUseableItem
+    [System.Serializable] public class PotionMajSpeedUp : Item, IUseableItem
     {
         bool usedUp;
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GraphMap
 {
     /** Carries out useful heuristics on reduced maps */
-    public class MapHeuristics
+    [System.Serializable] public class MapHeuristics
     {
         public readonly MapCycleReducer mapWithoutCycles;
         public readonly int startVertex;

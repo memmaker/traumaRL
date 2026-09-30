@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin.Features
 {
-    public class AntennaeObjective : SimpleObjective
+    [System.Serializable] public class AntennaeObjective : SimpleObjective
     {
         public AntennaeObjective(GraphMap.Objective objective, IEnumerable<Clue> objectiveProducesClues)
             : base(objective, objectiveProducesClues)

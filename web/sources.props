@@ -2,11 +2,18 @@
   <!-- RVIP: the TraumaRL sources shared by web/wasm (browser) and web/native (headless test).
        Mirrors the VS2013 csprojs' explicit compile lists; replaced: MapRendererSDLDotNet.cs,
        MapRendererLibTCod.cs, ImageDisplay*.cs, AssemblyInfo (see web/shim). -->
+  <PropertyGroup>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="10.0.0" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/Algorithms/IFieldOfView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/Algorithms/IPathFinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/ArrayCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/Config.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/RvipSave.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/Creatures/AlertBot.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/Creatures/Captain.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../RogueBasin/RogueBasin/Creatures/CombatBot.cs" />

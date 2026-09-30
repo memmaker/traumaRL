@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class AmmoPack : UseableItemUseOnPickup
+    [System.Serializable] public class AmmoPack : UseableItemUseOnPickup
     {
         bool usedUp;
 

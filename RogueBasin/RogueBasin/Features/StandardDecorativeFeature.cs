@@ -6,7 +6,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Features
 {
-    public class StandardDecorativeFeature : DecorationFeature
+    [System.Serializable] public class StandardDecorativeFeature : DecorationFeature
     {
         char representation;
         System.Drawing.Color representationColour;

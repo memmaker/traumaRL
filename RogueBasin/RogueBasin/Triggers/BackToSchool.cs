@@ -8,7 +8,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// Magic library
     /// </summary>
-    public class BackToSchool : DungeonSquareTrigger
+    [System.Serializable] public class BackToSchool : DungeonSquareTrigger
     {
 
         public BackToSchool()

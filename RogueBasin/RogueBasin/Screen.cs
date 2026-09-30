@@ -15,7 +15,7 @@ namespace RogueBasin {
     /// Is not serialized, so should not contain any game state.
     /// Contains a bit of state about overlay screens etc.
     /// </summary>
-    public class Screen
+    [System.Serializable] public class Screen
     {
         public enum TileLevel {
             Terrain = 0,

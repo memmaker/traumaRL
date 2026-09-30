@@ -8,7 +8,7 @@ namespace RogueBasin.FOV
     /// <summary>
     /// This is a C# port of https://github.com/domasx2/mrpas-js/blob/master/example/javascript/mrpas.js
     /// </summary>
-    class MRPAS
+    [System.Serializable] class MRPAS
     {
          
     struct Tile {
@@ -16,7 +16,7 @@ namespace RogueBasin.FOV
         public bool visible = false;
     }
     
-    struct PosSize {
+    [System.Serializable] struct PosSize {
         int x;
         int y;
 
@@ -44,7 +44,7 @@ namespace RogueBasin.FOV
             }
         }
 
-    struct Map {
+    [System.Serializable] struct Map {
 
         PosSize size;
 

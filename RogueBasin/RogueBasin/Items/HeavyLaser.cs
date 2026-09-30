@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class HeavyLaser : RangedWeapon, IEquippableItem
+    [System.Serializable] public class HeavyLaser : RangedWeapon, IEquippableItem
     {
 
         public HeavyLaser()

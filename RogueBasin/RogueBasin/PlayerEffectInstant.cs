@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// An effect that has an immediate effect (like a healing potion) but no duration
     /// </summary>
-    public abstract class PlayerEffectInstant : PlayerEffect
+    [System.Serializable] public abstract class PlayerEffectInstant : PlayerEffect
     {
         public PlayerEffectInstant()
         {

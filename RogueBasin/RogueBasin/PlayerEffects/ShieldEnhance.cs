@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class ShieldEnhance : PlayerEffectNoDuration
+    [System.Serializable] public class ShieldEnhance : PlayerEffectNoDuration
     {
         public int shieldEnhanceAmount { get; set; }
 

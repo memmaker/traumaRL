@@ -31,7 +31,7 @@ namespace RogueBasin
 
 
 
-    public abstract class DungeonSquareTrigger
+    [System.Serializable] public abstract class DungeonSquareTrigger
     {
         public int Level { get; set; }
         public Point mapPosition { get; set; }

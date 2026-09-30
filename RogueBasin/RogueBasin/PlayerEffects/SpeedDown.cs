@@ -7,7 +7,7 @@ namespace RogueBasin.PlayerEffects
     /// <summary>
     /// Speed up the player for a duration
     /// </summary>
-    public class SpeedDown : PlayerEffectSimpleDuration
+    [System.Serializable] public class SpeedDown : PlayerEffectSimpleDuration
     {
         public int duration  { get; set; }
 

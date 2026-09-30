@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GraphMap
 {
-    public class DoorClueGraphvizExport
+    [System.Serializable] public class DoorClueGraphvizExport
     {
         private MapModel model;
         private Dictionary<int, string> vertexMapping = new Dictionary<int,string>();

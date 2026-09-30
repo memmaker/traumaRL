@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Low threat, runs away easily. Poor eyesight.
     /// </summary>
-    public class FerretUnique : MonsterFightAndRunAI
+    [System.Serializable] public class FerretUnique : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 12;
         const int classMinHitpoints = 5;

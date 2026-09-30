@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    class MapExport
+    [System.Serializable] class MapExport
     {
         public MapExport()
         {

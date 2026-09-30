@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// Represents a global event on the dungeon
     /// </summary>
-    public abstract class DungeonEffect
+    [System.Serializable] public abstract class DungeonEffect
     {
         Dungeon dungeon;
 

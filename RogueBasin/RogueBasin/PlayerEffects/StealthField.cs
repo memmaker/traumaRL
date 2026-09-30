@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class StealthField : PlayerEffectSimpleDuration
+    [System.Serializable] public class StealthField : PlayerEffectSimpleDuration
     {
         public int duration { get; set; }
 

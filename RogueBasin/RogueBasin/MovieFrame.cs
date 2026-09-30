@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    public class MovieFrame
+    [System.Serializable] public class MovieFrame
     {
         public List<string> scanLines;
 

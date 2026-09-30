@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.PlayerEffects
 {
-    public class AimEnhance : PlayerEffectNoDuration
+    [System.Serializable] public class AimEnhance : PlayerEffectNoDuration
     {
         public int aimEnhanceAmount { get; set; }
 

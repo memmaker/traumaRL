@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    public class MonsterPlacement
+    [System.Serializable] public class MonsterPlacement
     {
         public class MonsterSet
         {

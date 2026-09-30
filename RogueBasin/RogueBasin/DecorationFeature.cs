@@ -8,7 +8,7 @@ namespace RogueBasin
     /// A fairly useless feature only used for window dressing!
     /// Only made a type so easy to distinguish from other features
     /// </summary>
-    public abstract class DecorationFeature : Feature
+    [System.Serializable] public abstract class DecorationFeature : Feature
     {
     }
 }

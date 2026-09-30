@@ -9,7 +9,7 @@ namespace RogueBasin
     /// <summary>
     /// An item that blocks the player's way 
     /// </summary>
-    public abstract class Lock : MapObject
+    [System.Serializable] public abstract class Lock : MapObject
     {
 
         protected bool isOpen = false;

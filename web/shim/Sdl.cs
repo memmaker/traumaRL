@@ -3,7 +3,7 @@
    MapRendererSDLDotNet (web/shim/WebRenderer.cs). */
 using System;
 namespace SdlDotNet.Core{
-	public class QuitEventArgs : EventArgs{}
+	[System.Serializable] public class QuitEventArgs : EventArgs{}
 	public class TickEventArgs : EventArgs{
 		public TickEventArgs(int tick, int elapsed){ Tick = tick; TicksElapsed = elapsed; }
 		public int Tick{ get; } public int TicksElapsed{ get; } public int Fps => 30;
@@ -24,7 +24,9 @@ namespace SdlDotNet.Core{
 				Tick?.Invoke(null, new TickEventArgs((int)now, (int)(now - last)));
 				last = now;
 				if(!running) break;
+				RogueBasin.RvipInput.InMainLoop = true;
 				var k = RogueBasin.RvipInput.NextKey(RogueBasin.RvipInput.IdleWait);
+				RogueBasin.RvipInput.InMainLoop = false;
 				if(k != null){
 					var a = k.ToSdl();
 					KeyboardDown?.Invoke(null, new SdlDotNet.Input.KeyboardEventArgs(a.Key, a.Mod, a.KeyboardCharacter, true));
@@ -50,7 +52,7 @@ namespace SdlDotNet.Input{
 		F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
 		NumLock, CapsLock, ScrollLock, RightShift, LeftShift, RightControl, LeftControl, RightAlt, LeftAlt
 	}
-	public class KeyboardEventArgs : EventArgs{
+	[System.Serializable] public class KeyboardEventArgs : EventArgs{
 		public KeyboardEventArgs(Key key, ModifierKeys mod, string ch, bool down){ Key = key; Mod = mod; KeyboardCharacter = ch; Down = down; }
 		public Key Key{ get; } public ModifierKeys Mod{ get; } public string KeyboardCharacter{ get; } public bool Down{ get; }
 	}
@@ -64,7 +66,7 @@ namespace System.Windows.Forms{
 }
 namespace RogueBasin{
 	/// Stand-in for the WinForms graph viewer (debug tool): does nothing.
-	public class ImageDisplay{
+	[System.Serializable] public class ImageDisplay{
 		public string Text{ get; set; }
 		public void AssignImage(string f){}
 		public void Show(){}

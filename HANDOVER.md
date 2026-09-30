@@ -23,12 +23,30 @@
     Stage-4 top-right A−/A+ bar removed.
   - Settings: IndexedDB database `/traumarl/files` (`RvipApp.dir + '/files'`), key
     `web-layout.json` = `{wm, face}`; no localStorage. Written on change (300 ms debounce) and on `pagehide`.
-  - **Saves: none.** TraumaRL has no working save: upstream's `Dungeon.SaveGame()` (XmlSerializer,
-    `S` key commented out upstream) throws "error reflecting type SaveGameInfo" (native test),
-    `LoadGame` is unreachable and `SaveGameInfo` lacks TraumaRL state (locks…). So no save on
-    quit / resume on reload: a reload starts a new station (beforeunload warns while running).
-    File ▾ keeps Export/Import (they say there is no save) and New game (= reload). Needs a
-    decision by the user: write a serializer (big) or accept one-sitting runs.
+  - **Saves: one slot, resume on reload** (`RogueBasin/RogueBasin/RvipSave.cs`). Upstream's XmlSerializer
+    `SaveGame()` stays dead. RvipSave writes `{Game.Dungeon, Game.MessageQueue, Game.Random}` whole with
+    BinaryFormatter (NuGet `System.Runtime.Serialization.Formatters` + `EnableUnsafeBinaryFormatterSerialization`
+    in `web/sources.props`; `TraumaWeb.csproj` drops the runtime pack's throwing stub — `rm -rf web/wasm/obj`
+    if `_framework/System.Runtime.Serialization.Formatters*.wasm` is ~55 KB instead of ~125 KB). All game/shim
+    classes got `[System.Serializable]` (script-inserted, 344 declarations); surrogates only for what is left:
+    delegates (fields → `DelegateRec`, rebuilt after the graph), HashSet/Dictionary/SortedDictionary and
+    subclasses (QuickGraph `VertexEdgeDictionary`) constructed in place and filled after the graph (no
+    `IObjectReference`: it breaks on cycles, "object with ID n was referenced in a fixup but does not exist"),
+    `System.Type`, and a reflection field-copier for non-serializable framework/QuickGraph types (Random,
+    `EdgeList`). `Map` packs its `MapSquare[,]` into one `long` per square (`OnSerializing`/`OnDeserialized`).
+    Atomic (tmp + `File.Move`). Save only at a safe point (`RogueBase.RvipCanSave`: main loop, map command,
+    no menu/auto-explore, turn done) and only if `WorldClock` moved; deleted in `Dungeon.EndOfGame`
+    (death, win, quit). Load in `TraumaRunner.TemplatedMapTest` before generation.
+    Web: page key `RvipSave` (handled in `RvipInput.NextKey`, only inside `Events.Run`) on `visibilitychange`
+    hidden, `pagehide`, and Export (flush); `beforeunload` shows "Leave site?" only when the pane JSON says
+    `unsaved` and asks for a save meanwhile. Worker `storeFile/deleteFile/initialFile` → page keeps
+    `traumarl.sav` in IndexedDB `/traumarl/files` (same db as `web-layout.json`), passes it at init.
+    Cost: ~5 MB, **5–8 s per save in the wasm interpreter** (0.5 s native), so no timed autosave; resume
+    boot ~8 s. Export/Import/New game work on the slot.
+    Native test: `NOQUIT=1 SAVE=1 TraumaNative <seed> <keys>` saves when the keys run out (prints `fp`),
+    then `LOADFP=1 NOQUIT=1 EXC=1 TraumaNative <seed2> 3000` resumes (prints `LOADED fp`, same) and plays on;
+    `RT=1` adds per-field round-trip sizes. Seeds 4, 11, 13 (2000 keys → save → 3000 keys): same fingerprint,
+    no crash, no exceptions; seed 13 died after resume and deleted the save.
   - Tests (cloud, Playwright Chromium, real `rvip-*.js` from `/home/user/rvip/web` served at `../`):
     layout 1280×720, A+ ×2 on Map → 48 px cells (scrolled, centred), A+ on Status changes only it,
     Enter menu pop-up in the Map body, resize 1000×650 → 1440×900 → 1200×750 → 760×500 → 1280×720
@@ -38,7 +56,7 @@
     may be older), look in the pane (drag dividers, one-window mode, a movie/end screen), then
     `web/build.sh`, commit + push, `web/deploy.sh` (web name `traumarl`,
     `/var/www/ruzzoli.de/roguelikes/traumarl/`), check live with `curl` + md5 vs `web/dist`.
-  - Open: no saves (above); no help.html yet (Help shows a fallback, stage 6); no Visible
+  - Open: saves are slow (5–8 s freeze; a faster hand-written format would fix it); no help.html yet (Help shows a fallback, stage 6); no Visible
     window (the game has no such list); the map viewport stays the game's 37×27 (bigger windows
     show black around it; enlarging `ViewableWidth/Height` for the web would fill them);
     status sprites (hearts, ammo, weapon icons) are inline images of the sheet sprites, not glyphs;

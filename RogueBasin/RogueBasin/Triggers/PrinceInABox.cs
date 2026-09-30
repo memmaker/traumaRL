@@ -7,7 +7,7 @@ namespace RogueBasin.Triggers
     /// <summary>
     /// When you enter the entrance square
     /// </summary>
-    public class PrinceInABox : DungeonSquareTrigger
+    [System.Serializable] public class PrinceInABox : DungeonSquareTrigger
     {
 
         public PrinceInABox()

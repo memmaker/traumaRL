@@ -7,7 +7,7 @@ namespace RogueBasin
     /// <summary>
     /// Equipment slot and current contents
     /// </summary>
-    public class EquipmentSlotInfo
+    [System.Serializable] public class EquipmentSlotInfo
     {
         /// <summary>
         /// The type of this slot

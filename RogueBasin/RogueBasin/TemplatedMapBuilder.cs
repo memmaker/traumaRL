@@ -14,7 +14,7 @@ namespace RogueBasin
     }
 
 
-    public class TemplatePositioned
+    [System.Serializable] public class TemplatePositioned
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -65,7 +65,7 @@ namespace RogueBasin
     
     /** Allows a map to be built up by placing templates in z-ordering.
      *  Z-ordering is currently meaningless because no overlap is allowed**/
-    public class TemplatedMapBuilder
+    [System.Serializable] public class TemplatedMapBuilder
     {
 
 

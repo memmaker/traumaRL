@@ -8,7 +8,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Medium threat. Slow. Hurts when it hits.
     /// </summary>
-    public class Zombie : MonsterFightAndRunAI
+    [System.Serializable] public class Zombie : MonsterFightAndRunAI
     {
         const int classDeltaHitpoints = 15;
         const int classMinHitpoints = 10;

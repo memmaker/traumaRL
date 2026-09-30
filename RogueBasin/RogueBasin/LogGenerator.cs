@@ -11,18 +11,18 @@ namespace RogueBasin
         Elevator, QuestArbitrary, SimpleLockedDoor, GoodyDoor
     }
 
-    public class LogExtract {
+    [System.Serializable] public class LogExtract {
         public List<string> lines = new List<string>();
         public LogType logType;
     }
 
-    public class LogEntry
+    [System.Serializable] public class LogEntry
     {
         public List<string> lines = new List<string>();
         public string title;
     }
 
-    public class LogGenerator
+    [System.Serializable] public class LogGenerator
     {
         Dictionary<LogType, Dictionary<string, List<LogExtract>>> logDatabase = new Dictionary<LogType, Dictionary<string, List<LogExtract>>>();
         Dictionary<string, LogExtract> logDatabaseByFilename = new Dictionary<string, LogExtract>();

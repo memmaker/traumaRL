@@ -12,7 +12,7 @@ namespace RogueBasin
     }
 
 
-    public class DungeonMaker
+    [System.Serializable] public class DungeonMaker
     {
         public GameDifficulty difficulty { get; set; }
 
@@ -101,7 +101,7 @@ namespace RogueBasin
             //5player.Hitpoints = player.MaxHitpoints;
         }
 
-        struct MonsterCommon
+        [System.Serializable] struct MonsterCommon
         {
             public MonsterCommon(Monster mon, int common)
             {

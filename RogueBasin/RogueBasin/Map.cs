@@ -8,7 +8,7 @@ using System.Linq;
 namespace RogueBasin
 {
 
-    public sealed class Location : Tuple<int, Point>
+    [System.Serializable] public sealed class Location : Tuple<int, Point>
     {
         public Location(int level, Point mapCoord)
             : base(level, mapCoord)
@@ -20,7 +20,7 @@ namespace RogueBasin
     }
 
     /** Immutable Point class */
-    public sealed class Point {
+    [System.Serializable] public sealed class Point {
         public readonly int x;
         public readonly int y;
 
@@ -184,9 +184,12 @@ namespace RogueBasin
         Blocking
     }
 
-    public class MapSquare
+    [System.Serializable] public class MapSquare
     {
         MapTerrain terrain = MapTerrain.Empty;
+        //RVIP save: one long per square (Map packs its squares, 150k objects are slow to serialize in wasm)
+        internal long RvipPack() { return (long)terrain | ((long)terrainLiteral << 16) | (walkable ? 1L << 32 : 0) | (blocksLight ? 1L << 33 : 0) | (seenByPlayer ? 1L << 34 : 0) | (seenByPlayerThisRun ? 1L << 35 : 0) | (inPlayerFOV ? 1L << 36 : 0) | (inMonsterFOV ? 1L << 37 : 0); }
+        internal static MapSquare RvipUnpack(long v) { return new MapSquare { terrain = (MapTerrain)(v & 0xffff), terrainLiteral = (char)((v >> 16) & 0xffff), walkable = (v & 1L << 32) != 0, blocksLight = (v & 1L << 33) != 0, seenByPlayer = (v & 1L << 34) != 0, seenByPlayerThisRun = (v & 1L << 35) != 0, inPlayerFOV = (v & 1L << 36) != 0, inMonsterFOV = (v & 1L << 37) != 0 }; }
         //Used for textual terrain
         public char terrainLiteral {get; set;}
 
@@ -352,7 +355,7 @@ namespace RogueBasin
         }
     }
 
-    public class FieldMap<T>
+    [System.Serializable] public class FieldMap<T>
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -389,7 +392,7 @@ namespace RogueBasin
     }
 
     /** Map of enums that indicate pathing information */
-    public class PathingMap : FieldMap<PathingTerrain>
+    [System.Serializable] public class PathingMap : FieldMap<PathingTerrain>
     {
 
         public PathingMap(int width, int height)
@@ -400,7 +403,7 @@ namespace RogueBasin
     };
 
     /** Map of enums that indicate fov information */
-    public class FovMap : FieldMap<FOVTerrain>
+    [System.Serializable] public class FovMap : FieldMap<FOVTerrain>
     {
 
         public FovMap(int width, int height)
@@ -410,7 +413,7 @@ namespace RogueBasin
         }
     };
 
-    public class Map
+    [System.Serializable] public class Map
     {
         public MapSquare[,] mapSquares;
         public int[,] roomIdMap;

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RogueBasin
 {
-    public class MapNode
+    [System.Serializable] public class MapNode
     {
         /// <summary>
         /// Unique Room ID. All squares of leaf nodes are initially set to this Id
@@ -908,7 +908,7 @@ namespace RogueBasin
         }
     }
 
-    public class MapGeneratorBSP : MapGenerator
+    [System.Serializable] public class MapGeneratorBSP : MapGenerator
     {
         int width = 40;
         int height = 40;
@@ -1772,7 +1772,7 @@ namespace RogueBasin
         }
         */
 
-        public class toSort
+        [System.Serializable] public class toSort
         {
             public PointInRoom index;
             public int coord;
@@ -1983,7 +1983,7 @@ namespace RogueBasin
          *  or 2 adjacent squares 
          */
         
-        public class ConnectionInfo
+        [System.Serializable] public class ConnectionInfo
         {
             public int LeftX { get; set; }
             public int LeftY { get; set; }

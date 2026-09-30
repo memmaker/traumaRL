@@ -8,7 +8,7 @@ namespace RogueBasin
     /// <summary>
     /// Class for a throwing creature that doesn't back away. All functionality is now in MonsterThrowAndRunAI with GetChanceBackAway = 0
     /// </summary>
-    public abstract class MonsterSimpleThrowingAI : MonsterFightAndRunAI
+    [System.Serializable] public abstract class MonsterSimpleThrowingAI : MonsterFightAndRunAI
     {
         public MonsterSimpleThrowingAI() : base()
         {

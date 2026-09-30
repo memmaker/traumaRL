@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RogueBasin.Features
 {
-    public class EscapePod : UseableFeature
+    [System.Serializable] public class EscapePod : UseableFeature
     {
         int destLevel;
         Point destLocation;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TraumaRL
 {
-    class Program
+    [System.Serializable] class Program
     {
         static void Main(string[] args)
         {

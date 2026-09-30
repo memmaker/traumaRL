@@ -7,7 +7,7 @@ namespace RogueBasin.Creatures
     /// <summary>
     /// Swarmer. Light melee with wide FOV. Responds to sounds.
     /// </summary>
-    public class RollingBomb : MonsterThrowAndRunAI
+    [System.Serializable] public class RollingBomb : MonsterThrowAndRunAI
     {
 
         public RollingBomb()

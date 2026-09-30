@@ -29,4 +29,14 @@
     <Compile Include="WebBackend.cs" />
     <EmbeddedResource Include="../config.txt" LogicalName="data/config.txt" />
   </ItemGroup>
+  <!-- BinaryFormatter (saves): the runtime pack's System.Runtime.Serialization.Formatters is a stub that throws
+       BinaryFormatter_Removed and wins the conflict with the NuGet package's real one; drop the stub. -->
+  <PropertyGroup><RvipFormattersDll>$(NuGetPackageRoot)system.runtime.serialization.formatters/10.0.0/lib/net8.0/System.Runtime.Serialization.Formatters.dll</RvipFormattersDll></PropertyGroup>
+  <Target Name="RvipFormattersFromPackage" AfterTargets="_HandlePackageFileConflicts;ResolveRuntimePackAssets" BeforeTargets="_ResolveCopyLocalAssetsForPublish">
+    <ItemGroup>
+      <RuntimePackAsset Remove="@(RuntimePackAsset)" Condition="'%(Filename)' == 'System.Runtime.Serialization.Formatters'" />
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'%(Filename)%(Extension)' == 'System.Runtime.Serialization.Formatters.dll'" />
+      <ReferenceCopyLocalPaths Include="$(RvipFormattersDll)" DestinationSubDirectory="" />
+    </ItemGroup>
+  </Target>
 </Project>

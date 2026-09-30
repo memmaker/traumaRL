@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin.Items
 {
-    public class MovieClue : Clue
+    [System.Serializable] public class MovieClue : Clue
     {
         string pickupMovie;
         char representation;

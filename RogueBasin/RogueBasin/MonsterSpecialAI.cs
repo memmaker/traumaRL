@@ -20,7 +20,7 @@ namespace RogueBasin
     /// There are different types of special AI but they all use the MonsterThrowAndRun AI base.
     /// Their special action (healing, raising, summoning etc.) differs. They all have missile weapons.
     /// </summary>
-    public abstract class MonsterSpecialAI : MonsterThrowAndRunAI
+    [System.Serializable] public abstract class MonsterSpecialAI : MonsterThrowAndRunAI
     {
         //public SimpleAIStates AIState { get; set; }
         //protected Creature currentTarget;

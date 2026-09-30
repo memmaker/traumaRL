@@ -8,7 +8,7 @@ namespace RogueBasin
     /// <summary>
     /// Message queue that will be presented to the user before (creatures etc.) and after (their actions) their turn
     /// </summary>
-    public class MessageQueue
+    [System.Serializable] public class MessageQueue
     {
         /// <summary>
         /// Contains a list of wrapped strings for the history. Public so serializable

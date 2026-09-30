@@ -5,7 +5,7 @@ using libtcodWrapper;
 
 namespace RogueBasin
 {
-    class MapGeneratorCave
+    [System.Serializable] class MapGeneratorCave
     {
         Map baseMap;
 

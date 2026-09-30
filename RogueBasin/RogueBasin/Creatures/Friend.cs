@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueBasin.Creatures
 {
-    public class Friend : MonsterNullAI
+    [System.Serializable] public class Friend : MonsterNullAI
     {
         const int classMaxHitpoints = 100;
 

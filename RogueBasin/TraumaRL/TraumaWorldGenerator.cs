@@ -11,7 +11,7 @@ using System.Text;
 namespace TraumaRL
 {
 
-    public partial class TraumaWorldGenerator
+    [System.Serializable] public partial class TraumaWorldGenerator
     {
         /// <summary>
         /// Mapping from template terrain to real terrain on the map
@@ -421,7 +421,7 @@ DecorationFeatureDetails.DecorationFeatures.Bin
             }
         }
 
-        public class LevelInfo
+        [System.Serializable] public class LevelInfo
         {
             public LevelInfo(int levelNo)
             {

@@ -8,7 +8,7 @@ namespace RogueBasin.SpecialMoves
     /// Push off from a wall twice to push a monster a certain number of squares away until it hits an obstacle
     /// This may count as a normal attack, damage the monster, or irritate other monsters
     /// </summary>
-    public class WallPush : SpecialMove
+    [System.Serializable] public class WallPush : SpecialMove
     {
         //Really private, accessors for serialization only
 
