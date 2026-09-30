@@ -74,6 +74,7 @@ namespace RogueBasin{
 				if(string.IsNullOrEmpty(s)){ if(ms >= 0) return null; continue; }
 				string[] p = s.Split('\t');
 				if(p.Length < 3) continue;
+				if(p[0] == "RvipView"){ var v = p[1].Split(','); int w, h; if(v.Length == 2 && int.TryParse(v[0], out w) && int.TryParse(v[1], out h) && Screen.Instance != null) Screen.Instance.RvipSetView(w, h); continue; }
 				if(p[0] == "RvipSave"){ if(InMainLoop) RvipSave.Request(); continue; } //the page asks (tab hidden / closed)
 				var k = new RvipKey{ Code = p[0], KeyName = p[1], Shift = p[2].Contains('s'), Ctrl = p[2].Contains('c'), Alt = p[2].Contains('a') };
 				if(k.Code == "ShiftLeft" || k.Code == "ShiftRight" || k.Code.StartsWith("Control") || k.Code.StartsWith("Alt") || k.Code.StartsWith("Meta")) continue;

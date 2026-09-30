@@ -10,12 +10,14 @@ using System.Drawing;
 using System.Text;
 namespace RogueBasin{
 	[System.Serializable] class MapRendererSDLDotNet : IMapRenderer{
-		public const int Cols = 60, Rows = 45, LAYERS = 4, CELL = 1 + LAYERS * 3; //count, then (id, fg, bg) per layer
-		public static readonly int[] Cells = new int[Cols * Rows * CELL];
+		public const int LAYERS = 4, CELL = 1 + LAYERS * 3; //count, then (id, fg, bg) per layer
+		public static int Cols = 60, Rows = 45; //grows with the web Map window (Screen.RvipSetView)
+		public static int[] Cells = new int[Cols * Rows * CELL];
+		public static void Resize(int cols, int rows){ Cols = cols; Rows = rows; Cells = new int[cols * rows * CELL]; }
 		readonly List<(int x, int y, int rgb, string s)> texts = new List<(int, int, int, string)>();
 		static readonly Color transparent = Color.FromArgb(255, 0, 255);
 		static int Rgb(Color c){ return (c.R << 16) | (c.G << 8) | c.B; }
-		string lastInfo; int[] lastCells = new int[Cells.Length];
+		string lastInfo; int[] lastCells = new int[0];
 
 		public void RenderMap(TileEngine.TileMap map, Point off, Rectangle vp){
 			if(off.x >= map.Columns || off.y >= map.Rows) throw new Exception("Point outside map " + off);
@@ -45,7 +47,7 @@ namespace RogueBasin{
 		bool full; //a whole-screen view is up (movie, history, end screen): DrawFrame(clear) since the last Clear()
 		static int histSent;
 		public void Flush(){
-			var sb = new StringBuilder("{\"cols\":60,\"rows\":35,\"layers\":4,\"texts\":[");
+			var sb = new StringBuilder("{\"cols\":60,\"rows\":35,\"stride\":" + Cols + ",\"layers\":4,\"texts\":[");
 			for(int i = 0; i < texts.Count; i++){
 				var t = texts[i];
 				if(i > 0) sb.Append(',');
@@ -57,7 +59,7 @@ namespace RogueBasin{
 			sb.Append('}');
 			string info = sb.ToString();
 			if(info == lastInfo && Cells.AsSpan().SequenceEqual(lastCells)) return;
-			lastInfo = info; Cells.CopyTo(lastCells, 0);
+			lastInfo = info; if(lastCells.Length != Cells.Length) lastCells = new int[Cells.Length]; Cells.CopyTo(lastCells, 0);
 			RvipInput.Backend.Present(Cells, info);
 		}
 		/// RVIP stage 5: each web window gets its own content, decided here from the game's own screen areas
@@ -69,6 +71,8 @@ namespace RogueBasin{
 			Rectangle m = scr.RvipMapRect, st = scr.RvipStatsRect, ms = scr.RvipMsgRect;
 			sb.Append(",\"full\":").Append(full ? 1 : 0);
 			sb.Append(",\"map\":[").Append(m.X).Append(',').Append(m.Y).Append(',').Append(m.Width).Append(',').Append(m.Height).Append(']');
+			//status: per row (not while a whole-screen view covers the stats area; the page keeps the last rows)
+			if(!full){
 			//status: per row, segments ["text", rgb] or [sprite id, rgb]; trailing empty rows dropped (RVIP W0 5)
 			var rows = new List<string>();
 			for(int y = st.Y; y < st.Bottom; y++){
@@ -97,6 +101,7 @@ namespace RogueBasin{
 			}
 			while(rows.Count > 0 && rows[rows.Count - 1] == "[]") rows.RemoveAt(rows.Count - 1);
 			sb.Append(",\"status\":[").Append(string.Join(",", rows)).Append(']');
+			}
 			//prompt: the live message rows
 			var pr = new List<string>();
 			for(int y = ms.Y; y < ms.Bottom; y++){

@@ -296,6 +296,24 @@ namespace RogueBasin {
         public System.Drawing.Rectangle RvipStatsRect { get { return new System.Drawing.Rectangle(statsDisplayTopLeft.x + 1, statsDisplayTopLeft.y, statsDisplayBotRight.x - statsDisplayTopLeft.x, statsDisplayBotRight.y - statsDisplayTopLeft.y + 1); } }
         public System.Drawing.Rectangle RvipMsgRect { get { return new System.Drawing.Rectangle(msgDisplayTopLeft.x, msgDisplayTopLeft.y, msgDisplayBotRight.x - msgDisplayTopLeft.x + 1, msgDisplayNumLines); } }
 
+        //RVIP: the web page sizes the map view to its Map window (key "RvipView" w,h). The game's own
+        //37x27 layout stays for one-window mode; any other size puts the map right of the 60-column
+        //screen so it never overlaps the stats/message areas, and the renderer's buffer grows to fit.
+        public void RvipSetView(int w, int h)
+        {
+            w = Math.Max(5, Math.Min(w, 200)); h = Math.Max(5, Math.Min(h, 150));
+            if (w == ViewableWidth && h == ViewableHeight) return;
+            bool own = w == 37 && h == 27;
+            mapTopLeftBase = own ? new Point(2, 6) : new Point(61, 1);
+            mapBotRightBase = new Point(mapTopLeftBase.x + w - 1, mapTopLeftBase.y + h - 1);
+            ViewableWidth = w; ViewableHeight = h;
+            MapRendererSDLDotNet.Resize(Math.Max(60, mapBotRightBase.x + 2), Math.Max(45, mapBotRightBase.y + 2));
+            tileMap = null;
+            if (Game.Dungeon != null && Game.Dungeon.Player != null)
+                CenterViewOnPoint(Game.Dungeon.Player.LocationLevel, Game.Dungeon.Player.LocationMap);
+            NeedsUpdate = true;
+        }
+
         //Setup the screen
         public void InitialSetup()
         {

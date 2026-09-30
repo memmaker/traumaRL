@@ -137,7 +137,7 @@ function icon(id, fg) {
 function draw() {
 	dirty = false;
 	if (!scr || !sheetData || !wm) return;
-	const cv = $('map').querySelector('canvas'), C = info.cols, S = 1 + info.layers * 3, cell = mapCell();
+	const cv = $('map').querySelector('canvas'), C = info.stride || info.cols, S = 1 + info.layers * 3, cell = mapCell();
 	/* whole-screen views (movies, history, end screen) and one-window mode: the game's full screen; else its map viewport */
 	const [x0, y0, w, h] = info.full || wm.mode() === 'single' ? [0, 0, info.cols, info.rows] : info.map;
 	if (cv.width !== w * cell || cv.height !== h * cell) { cv.width = w * cell; cv.height = h * cell; }
@@ -157,6 +157,14 @@ function draw() {
 	/* the game centres its own viewport on the hero: the page centres that viewport in the window
 	   (scrolls it when the window is smaller, clamped at the edges) */
 	RvipWM.center(cv, cv.width / 2, cv.height / 2, cv.width, cv.height);
+	view(cell);
+}
+/* the map view follows the Map window: cells that fit (the game's own 37x27 in one-window mode) */
+let lastView = '';
+function view(cell) {
+	const b = $('map');
+	const v = wm.mode() === 'single' ? '37,27' : Math.max(5, Math.floor(b.clientWidth / cell)) + ',' + Math.max(5, Math.floor(b.clientHeight / cell));
+	if (v !== lastView && app.running) { lastView = v; sendKey('RvipView', v, ''); }
 }
 function redraw() { if (!dirty) { dirty = true; requestAnimationFrame(draw); } }
 
@@ -263,10 +271,10 @@ function bar() {
 /* ---------- test hooks (web/test.mjs): top sprite as ASCII per cell, text runs, menu ---------- */
 function text() {
 	if (!scr) return '';
-	const C = info.cols, R = info.rows, S = 1 + info.layers * 3, rows = [];
+	const C = info.cols, R = info.rows, W = info.stride || C, S = 1 + info.layers * 3, rows = [];
 	for (let y = 0; y < R; y++) {
 		let s = '';
-		for (let x = 0; x < C; x++) { const o = (x + y * C) * S, n = scr[o], id = n ? scr[o + 1 + (n - 1) * 3] : 32; s += id > 32 && id < 127 ? String.fromCharCode(id) : n ? '#' : ' '; }
+		for (let x = 0; x < C; x++) { const o = (x + y * W) * S, n = scr[o], id = n ? scr[o + 1 + (n - 1) * 3] : 32; s += id > 32 && id < 127 ? String.fromCharCode(id) : n ? '#' : ' '; }
 		rows.push(s.trimEnd());
 	}
 	let s = rows.join('\n') + '\n' + info.texts.map(t => t[3]).join('\n');
