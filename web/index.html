@@ -59,7 +59,26 @@
 		width: min(980px, calc(100vw - 32px)); height: calc(100vh - 64px); display: flex; flex-direction: column; }
 	#help .head { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
 	#help .head h2 { margin: 0; font-size: 16px; color: var(--accent); flex: 1; }
-	#help-body { overflow: auto; padding: 4px 24px 32px; outline: none; font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+	#help-body { overflow: auto; padding: 4px 24px 32px; outline: none; font-size: 14px; line-height: 1.6; }
+	#help-body h2 { font-size: 19px; margin: 28px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); color: var(--text); }
+	#help-body h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin: 18px 0 8px; }
+	#help-body p, #help-body ul, #help-body ol { max-width: 76ch; margin: 0 0 12px; }
+	#help-body li { margin: 3px 0; }
+	#help-body .toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; padding: 0; list-style: none; }
+	#help-body .toc a { display: block; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--text); text-decoration: none; }
+	#help-body .toc a:hover { border-color: var(--accent); }
+	#help-body .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+	#help-body .box { background: #1c1c22; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+	#help-body .key { background: #221d10; border-color: #4a3d18; }
+	#help-body dl { margin: 0; display: grid; grid-template-columns: minmax(5.5em, max-content) 1fr; gap: 6px 12px; align-items: baseline; }
+	#help-body dd { margin: 0; }
+	#help-body .all { columns: 3 240px; column-gap: 24px; }
+	#help-body .all div { break-inside: avoid; display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px dashed var(--line); }
+	#help-body .all kbd { flex: none; }
+	#help-body details summary { cursor: pointer; color: var(--accent); margin: 8px 0; }
+	#help-body code { font: 12px ui-monospace, Menlo, monospace; background: #22222a; padding: 0 4px; border-radius: 3px; }
+	#help-body .or { color: var(--dim); font-size: 12px; margin: 0 3px; }
+	#help-body .plus { color: var(--dim); margin: 0 2px; }
 </style>
 </head>
 <body>
@@ -68,6 +87,10 @@
 	<button id="btn-help" title="Game guide and controls">Help</button>
 	<button id="btn-file" title="New game">File ▾</button>
 	<span class="sep"></span>
+	<button id="btn-audio" title="Sound effects">Audio ▾</button>
+	<div id="menu-audio">
+		<label title="Sound effects on or off (off by default)"><input type="checkbox" id="chk-sound"> Sound effects</label>
+	</div>
 	<button id="btn-layout" title="Windows: layout, show and hide">Windows ▾</button>
 	<select id="sel-font" title="Font for the text windows"><option value="">Font: default</option></select>
 	<div id="menu-file">
@@ -108,6 +131,7 @@
 
 <script src="../rvip-wm.js"></script>
 <script src="../rvip-app.js"></script>
+<script src="../rvip-sound.js"></script>
 <script src="trauma.js"></script>
 </body>
 </html>

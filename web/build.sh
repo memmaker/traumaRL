@@ -12,6 +12,8 @@ dotnet publish web/wasm/TraumaWeb.csproj -c Release -nologo -v q | grep -v "^$" 
 [ -f "$PUB/_framework/dotnet.js" ] || { echo "publish failed"; exit 1; }
 mkdir -p "$OUT"
 cp -r "$PUB/_framework" "$OUT/_framework"
+python3 web/make-help.py "$OUT"
+python3 web/make-sounds.py "$OUT"
 cp web/index.html web/trauma.js web/worker.js web/coi-sw.js "$OUT/"
 # shared page code (rvip-wm.js, rvip-app.js) and fonts are served from ../ on the server (roguelikes-index)
 cp RogueBasin/TraumaRL/bin/Debug/TraumaSprites.png RogueBasin/TraumaRL/bin/Debug/alexisv3.ttf "$OUT/"

@@ -10,6 +10,8 @@
 
      x          -       Examine / target
      e          -       Auto-explore
+   Enter        -       Command menu
+     i          -       Inventory menu
    < >          -       Walk to elevator
  (shift)L       -       Read logs
  (shift)C       -       Key cards

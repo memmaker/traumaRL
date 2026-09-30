@@ -89,6 +89,7 @@ namespace RogueBasin{
 			for(int x = 0; x < m.width; x++) for(int y = 0; y < m.height; y++){ h = h * 31 + (int)m.mapSquares[x, y].Terrain; h = h * 3 + (m.mapSquares[x, y].SeenByPlayer ? 1 : 0); }
 			return "fp " + p.Name + " L" + p.LocationLevel + " " + p.LocationMap + " hp" + p.Hitpoints + " mon" + d.Monsters.Count + " items" + d.Items.Count + " locks" + d.Locks.Count + " map" + h.ToString("x");
 		}
+		public void Sound(string name){ if(Environment.GetEnvironmentVariable("SOUNDS") != null) Console.WriteLine("SOUND " + name); }
 		public void FileChanged(string name){ Console.WriteLine("FILE " + name + (File.Exists(name) ? " " + new FileInfo(name).Length : " deleted")); }
 		public void Finish(int rc){
 			if(Game.Dungeon != null && Game.Dungeon.Player != null) try{ Console.WriteLine(Fingerprint()); }catch{}

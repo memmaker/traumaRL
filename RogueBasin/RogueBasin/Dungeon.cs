@@ -2588,6 +2588,7 @@ namespace RogueBasin
             //We can't take the monster out of the collection directly since we might still be iterating through them
             //Instead set a flag on the monster and remove it after all turns are complete
             monster.Alive = false;
+            RvipInput.Sound("kill"); //RVIP 6
 
             //Remove all existing effects
             monster.RemoveAllEffects();
@@ -4350,6 +4351,7 @@ namespace RogueBasin
             */
             //RunMainLoop = false;
             RvipSave.Delete(); //RVIP: roguelike, one life
+            if (!playerQuit) RvipInput.Sound(playerWon ? "win" : "death"); //RVIP 6
             EndOfGameMechanics(playerWon, playerQuit);
         }
 

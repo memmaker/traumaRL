@@ -15,6 +15,8 @@ namespace RogueBasin{
 		[JSImport("storeFile","trauma")] internal static partial void JsStoreFile(string name,[JSMarshalAs<JSType.MemoryView>] Span<byte> data);
 		[JSImport("deleteFile","trauma")] internal static partial void JsDeleteFile(string name);
 		[JSImport("initialFile","trauma")] internal static partial byte[] JsInitialFile(string name); //null: none
+		[JSImport("sound","trauma")] internal static partial void JsSound(string name);
+		public void Sound(string name){ JsSound(name); }
 		public void FileChanged(string name){ if(File.Exists(name)) JsStoreFile(name, File.ReadAllBytes(name)); else JsDeleteFile(name); }
 		public string WaitKey(int ms){ return JsWaitKey(ms); }
 		public void Sleep(int ms){ JsSleep(ms); }

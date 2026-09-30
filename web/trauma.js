@@ -25,7 +25,7 @@ const DB = RvipApp.dir + '/files';
 const $ = id => document.getElementById(id);
 const hex = c => '#' + (c & 0xffffff).toString(16).padStart(6, '0');
 let worker, ring, db, scr = null, info = { texts: [] }, dirty = false, sheet, sheetData, ended = false;
-let onStored = null, wm = null, L = { wm: null, face: '' }, saveT = 0;
+let onStored = null, wm = null, L = { wm: null, face: '', sound: false }, saveT = 0;
 const cache = new Map(), icons = new Map();
 
 const SAV = 'traumarl.sav';
@@ -229,9 +229,10 @@ function loadFace(n) {
 async function makeWM() {
 	try {
 		const d = await getFile('web-layout.json');
-		if (d) { const s = JSON.parse(new TextDecoder().decode(d)); L = { wm: s.wm || null, face: s.face || '' }; }
+		if (d) { const s = JSON.parse(new TextDecoder().decode(d)); L = { wm: s.wm || null, face: s.face || '', sound: !!s.sound }; }
 	} catch (_) { }
 	loadFace(L.face);
+	$('chk-sound').checked = L.sound; /* off by default */
 	wm = RvipWM({
 		area: $('game'), menu: $('btn-layout'),
 		wins: [{ id: 'map', title: 'Map' }, { id: 'status', title: 'Status' }, { id: 'msg', title: 'Messages' }, { id: 'inv', title: 'Inventory' }],
@@ -249,6 +250,8 @@ async function makeWM() {
 }
 function bar() {
 	RvipWM.dropdown($('btn-file'), $('menu-file'));
+	RvipWM.dropdown($('btn-audio'), $('menu-audio'));
+	$('chk-sound').onchange = function () { L.sound = this.checked; saveLayout(); this.blur(); };
 	const sel = $('sel-font');
 	RvipWM.fonts.then(() => { RvipWM.fontOptions(sel); sel.value = L.face || ''; }).catch(() => { });
 	sel.onchange = function () { L.face = this.value; saveLayout(); loadFace(this.value); this.blur(); };
@@ -302,6 +305,7 @@ async function main() {
 		else if (m.t === 'started') app.status(sav ? 'Loading the saved run…' : 'Generating the station…');
 		else if (m.t === 'crash') { app.crashed(new Error(m.msg.split('\n')[0])); console.error(m.msg); }
 		else if (m.t === 'store') putFile(m.name, m.data).then(() => { app.status(''); if (onStored) onStored(); }).catch(err => app.status('Saving to browser storage (IndexedDB) failed: ' + err, true));
+		else if (m.t === 'sound') { if (L.sound) RVIPSound.play([m.name], 0.5); }
 		else if (m.t === 'delete') delFile(m.name).catch(() => {});
 		else if (m.t === 'quit' || m.t === 'exit') gameOver();
 	};

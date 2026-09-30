@@ -33,6 +33,7 @@ const imports = {
 	quit() { postMessage({ t: 'quit' }); },
 	/* the save file: the page keeps it in IndexedDB */
 	storeFile(name, view) { postMessage({ t: 'store', name, data: view.slice() }); },
+	sound(name) { postMessage({ t: 'sound', name }); },
 	deleteFile(name) { postMessage({ t: 'delete', name }); },
 	initialFile(name) { return files[name] || null; },
 };

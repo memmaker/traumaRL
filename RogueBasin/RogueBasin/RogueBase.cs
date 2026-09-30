@@ -2205,6 +2205,7 @@ namespace RogueBasin
             }
 
             //Actually do firing action
+            RvipInput.Sound("fire"); //RVIP 6 (before the shot, so hit/kill follow it)
             bool success = weapon.FireItem(target);
 
             if (success)

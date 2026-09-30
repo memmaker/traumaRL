@@ -11,6 +11,7 @@ namespace RogueBasin{
 		void Present(int[] cells, string info);
 		void Quit();
 		void FileChanged(string name); //a persistent file was written or deleted (web: mirror to IndexedDB)
+		void Sound(string name); //RVIP 6: a game action names its sound effect (the page plays it if Sound is on)
 	}
 	[System.Serializable] public class RvipKey{
 		public string Code, KeyName; public bool Shift, Ctrl, Alt;
@@ -79,5 +80,6 @@ namespace RogueBasin{
 			}
 		}
 		public static void Sleep(int ms){ Backend.Sleep(ms); }
+		public static void Sound(string name){ if(Backend != null) Backend.Sound(name); }
 	}
 }
