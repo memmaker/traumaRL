@@ -2,7 +2,34 @@
 
 ## RVIP progress
 
-- **Stage 1 (Get + build): done.** Next: **stage 2** (explore + stairs + no `--More--`).
+- **Stage 1 (Get + build): done.**
+- **Stage 2 (Explore + stairs + no `--More--`): done.** Next: **stage 3**.
+  - Keys: `e` auto-explore, `<` / `>` walk to a known elevator (TraumaRL has no
+    stairs; elevators teleport on entry, so the walk stops *next to* one and the
+    second press steps in; `<` prefers elevators to lower-numbered levels, `>`
+    higher, else any). Help movie `bin/Debug/movies/helpkeys0.amf` updated.
+  - File `RogueBasin/RogueBasin/AutoExplore.cs` (partial `RogueBase`; added to
+    `DDRogue.csproj` and `web/sources.props`). Hooks in `RogueBase.cs`:
+    `AutoTick()` in `ApplicationTickEventHandler` after
+    `AdvanceDungeonToNextPlayerTick()` (one `PCMove` per turn, sets
+    `waitingForTurnTick`; the event loop's 40 ms key wait paints each step),
+    `AutoKeyIntercept()` first in `KeyboardEventHandler` (any key stops; its
+    key-up is swallowed), key dispatch at top of `InputState.MapMovement`.
+  - Known grid = `MapSquare.SeenByPlayer`; BFS 8-dir over walkable or closed-door
+    known cells, never through `ClosedLock` or any `UseableFeature` (elevators).
+    Frontier = next to unseen, until stood on; seen items are targets. Stops:
+    monster in FOV ("In view: X."), new item in view ("You see: X."), any new
+    message (`MessageQueue.AddedCount`, new), a step that did not move (door
+    opening excepted), level change, no path ("Nothing left to explore", or
+    "…behind a locked door" when known locks exist).
+  - No `--More--` exists: messages never wait for a key (the `<more>` code is
+    commented out upstream). Nothing to do.
+  - Native harness: SCRIPT `_` = no key for one tick (lets explore run),
+    `NOMON=1` clears monsters and prints seen/walkable + elevators at exit,
+    `MSGS=1` prints each new message line. Known-grid test: seed 2/3,
+    `~~~~~~` + 10×(`e`+300 `_`) with NOMON → walkable seen 745/745, 748/748,
+    "Nothing left to explore."; without NOMON stops "In view: Maint Bot/Swarmer".
+    Chromium: `e` → "In view: Maint Bot.". 3×3000 random keys natively: no crash.
 - Folder `/home/user/traumarl`, branch `claude/traumarl-rvip-xj7ndq`. Base = upstream
   branch `traumarl` (the only upstream branch) @ `d429380` ("Adding libtcodnet
   references so this branch compiles"), pristine.
@@ -53,6 +80,11 @@
   still written to MEMFS at start (harmless).
 
 ### Open problems
+
+- Upstream `TraumaWorldGenerator.quickLevelGen = true`: one level, **no
+  elevators, quests or loot links**, so `<`/`>` only say "You don't know of an
+  elevator on this level." Setting it false made native generation run >12 min
+  without reaching the game (killed). The elevator walk is untested live.
 
 - No trimming: ILLink 10 crashes (IL1012, KeyNotFound in CompilerGeneratedState)
   on QuickGraph's net4 iterators; dist is 25 MB. Try excluding QuickGraph from

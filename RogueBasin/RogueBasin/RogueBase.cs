@@ -14,7 +14,7 @@ using SdlDotNet.Input;
 
 namespace RogueBasin
 {
-    public class RogueBase : IDisposable
+    public partial class RogueBase : IDisposable
     {
         DungeonMaker dungeonMaker = null;
         
@@ -147,6 +147,8 @@ namespace RogueBasin
 
             AdvanceDungeonToNextPlayerTick();
 
+            AutoTick(); //RVIP: auto-explore / walk to elevator
+
             ProfileEntry("Tick Update Film");
 
             if (firstRun)
@@ -161,6 +163,10 @@ namespace RogueBasin
 
         private void KeyboardEventHandler(object sender, KeyboardEventArgs args)
         {
+
+            //RVIP: any key stops auto-explore / elevator walk
+            if (AutoKeyIntercept(args))
+                return;
 
             //Dungeon click must complete before we take more input
             if (waitingForTurnTick)
@@ -500,6 +506,13 @@ namespace RogueBasin
 
                     //Normal movement on the map
                     case InputState.MapMovement:
+
+                        //RVIP: auto-explore and walk to elevator
+                        if (args.KeyboardCharacter == "e" || args.KeyboardCharacter == "<" || args.KeyboardCharacter == ">")
+                        {
+                            timeAdvances = AutoStart(args.KeyboardCharacter[0]);
+                            break;
+                        }
 
                         if (args.Mod.HasFlag(ModifierKeys.LeftShift) || args.Mod.HasFlag(ModifierKeys.RightShift))
                         {

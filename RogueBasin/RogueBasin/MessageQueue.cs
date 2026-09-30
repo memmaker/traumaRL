@@ -31,6 +31,8 @@ namespace RogueBasin
         /// </summary>
         public bool RequireKeypress { get; set; }
 
+        public int AddedCount { get; private set; }
+
         public MessageQueue()
         {
             messages = new List<string>();
@@ -40,6 +42,7 @@ namespace RogueBasin
 
         public void AddMessage(string newMessage) {
             messages.Add(newMessage);
+            AddedCount++; //RVIP: auto-explore stops on new messages
         }
 
         public List<string> GetMessageHistoryAsList()
