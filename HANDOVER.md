@@ -4,6 +4,25 @@
 
 - **Stage 1 (Get + build): done.**
 - **Stage 2 (Explore + stairs + no `--More--`): done.** Next: **stage 3**.
+  - Full level generation (stage 2 remainder): `quickLevelGen = false` in
+    `TraumaWorldGenerator.cs`. Upstream hang cause: with it false, the generic
+    `GenerateStandardLevel` loop still ran over every level except medical
+    (the special-level exclusion list was commented out), overwriting the 9
+    special levels after their elevators/escape pods were recorded, so quest
+    placement always threw (escape-pod room / edge missing) and
+    `TraumaRunner`'s `catch`+`while(true)` retried forever. Fix: use the
+    exclusion list when `!quickLevelGen`. Retries now print `RVIP gen retry:`
+    to stderr. Gen: ~2 s native, ~9 s browser; page shows "Generating the
+    station…" between worker start and first screen.
+  - Auto-explore / `<` `>` now walk through known locks the player holds the
+    key cards for (bump opens) and treat all locks as passable when
+    `AllLocksOpen`. Medical elevator lock needs 10 cameras destroyed (design).
+  - Harness: `OPEN=1` (with NOMON) sets `AllLocksOpen`; NOMON exit prints locks.
+    Movies (lock open) wait for Enter: put `~` after explore blocks. Test:
+    seeds 1,2: explore + `>>` → level 1, `<<` → back to Medical; seed 3 reaches level 1.
+  - Open: map gen is not deterministic per seed (layout differs run to run);
+    browser elevator travel only checked as far as `>` messages (needs cameras
+    killed; no lock-open switch in the web build).
   - Keys: `e` auto-explore, `<` / `>` walk to a known elevator (TraumaRL has no
     stairs; elevators teleport on entry, so the walk stops *next to* one and the
     second press steps in; `<` prefers elevators to lower-numbered levels, `>`

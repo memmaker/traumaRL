@@ -35,14 +35,14 @@ namespace RogueBasin{
 		public void Sleep(int ms){}
 		string lastMsg = "";
 		public void Present(int[] cells, string info){
-			if(Environment.GetEnvironmentVariable("NOMON") != null && Game.Dungeon?.Monsters != null) Game.Dungeon.Monsters.Clear(); // explore test: no monster stops
+			if(Environment.GetEnvironmentVariable("NOMON") != null && Game.Dungeon?.Monsters != null) { Game.Dungeon.Monsters.Clear(); Game.Dungeon.AllLocksOpen = Environment.GetEnvironmentVariable("OPEN") != null; } // explore test: no monster stops
 			if(Environment.GetEnvironmentVariable("MSGS") != null){ int i = info.IndexOf("[2,1,"); string m = i < 0 ? "" : info.Substring(i); if(m != lastMsg && m != ""){ Console.WriteLine("MSG " + (Game.Dungeon?.Player?.LocationMap) + " " + m); } lastMsg = m; }
 			last = (int[])cells.Clone(); lastInfo = info; presents++; }
 		public void Quit(){ Finish(0); }
 		public void Finish(int rc){
 			Console.WriteLine("presents " + presents + " rc " + rc + (Game.Dungeon != null && Game.Dungeon.Player != null ? " level " + Game.Dungeon.Player.LocationLevel + " at " + Game.Dungeon.Player.LocationMap + " hp " + Game.Dungeon.Player.Hitpoints : ""));
 			if(Environment.GetEnvironmentVariable("DUMP") != null) Console.WriteLine(Dump());
-			if(Environment.GetEnvironmentVariable("NOMON") != null && Game.Dungeon?.Player != null){ var m = Game.Dungeon.Levels[Game.Dungeon.Player.LocationLevel]; int w = 0, sn = 0, lk = 0; for(int x = 0; x < m.width; x++) for(int y = 0; y < m.height; y++){ var q = m.mapSquares[x, y]; if(q.Walkable){ w++; if(q.SeenByPlayer) sn++; } if(q.Terrain == MapTerrain.ClosedLock) lk++; } Console.WriteLine("walkable seen " + sn + "/" + w + " locks " + lk + " elevators " + string.Join(",", Game.Dungeon.Features.OfType<Features.Elevator>().Where(e => e.LocationLevel == Game.Dungeon.Player.LocationLevel).Select(e => e.LocationMap + "->" + e.DestLevel + " seen " + m.mapSquares[e.LocationMap.x, e.LocationMap.y].SeenByPlayer))); }
+			if(Environment.GetEnvironmentVariable("NOMON") != null && Game.Dungeon?.Player != null){ var m = Game.Dungeon.Levels[Game.Dungeon.Player.LocationLevel]; int w = 0, sn = 0, lk = 0; for(int x = 0; x < m.width; x++) for(int y = 0; y < m.height; y++){ var q = m.mapSquares[x, y]; if(q.Walkable){ w++; if(q.SeenByPlayer) sn++; } if(q.Terrain == MapTerrain.ClosedLock) lk++; } foreach(var kv in Game.Dungeon.Locks) if(kv.Key.Level == Game.Dungeon.Player.LocationLevel) foreach(var l in kv.Value) Console.WriteLine("lock " + kv.Key.MapCoord + " " + l.GetType().Name + " open " + l.IsOpen() + " seen " + m.mapSquares[kv.Key.MapCoord.x, kv.Key.MapCoord.y].SeenByPlayer); Console.WriteLine("walkable seen " + sn + "/" + w + " locks " + lk + " elevators " + string.Join(",", Game.Dungeon.Features.OfType<Features.Elevator>().Where(e => e.LocationLevel == Game.Dungeon.Player.LocationLevel).Select(e => e.LocationMap + "->" + e.DestLevel + " seen " + m.mapSquares[e.LocationMap.x, e.LocationMap.y].SeenByPlayer))); }
 			Environment.Exit(rc);
 		}
 		/// Top sprite per cell as a character (sprite ids below 128 are ASCII glyphs in TraumaSprites.png), then text runs.

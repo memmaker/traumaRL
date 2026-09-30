@@ -152,7 +152,7 @@ namespace RogueBasin
             {
                 if (!known(x, y)) return false;
                 var t = map.mapSquares[x, y].Terrain;
-                if (t == MapTerrain.ClosedLock) return false;
+                if (t == MapTerrain.ClosedLock) return AutoCanUnlock(d, p, lvl, new Point(x, y));
                 if (!map.mapSquares[x, y].Walkable && t != MapTerrain.ClosedDoor) return false;
                 if (d.FeatureAtSpace(lvl, new Point(x, y)) is UseableFeature) return false; // elevators etc: never auto-step
                 return true;
@@ -182,7 +182,7 @@ namespace RogueBasin
             {
                 var c = q.Dequeue();
                 if (c != start && isGoal(c.x, c.y)) { goal = c; break; }
-                if (c != start && map.mapSquares[c.x, c.y].Terrain == MapTerrain.ClosedDoor) continue; // expand beyond after opening
+                if (c != start && (map.mapSquares[c.x, c.y].Terrain == MapTerrain.ClosedDoor || map.mapSquares[c.x, c.y].Terrain == MapTerrain.ClosedLock)) continue; // expand beyond after opening
                 for (int k = 0; k < 8; k++)
                 {
                     var n = new Point(c.x + adx[k], c.y + ady[k]);
@@ -194,7 +194,7 @@ namespace RogueBasin
             {
                 bool locks = false;
                 for (int x = 0; x < map.width && !locks; x++) for (int y = 0; y < map.height; y++)
-                        if (map.mapSquares[x, y].SeenByPlayer && map.mapSquares[x, y].Terrain == MapTerrain.ClosedLock) { locks = true; break; }
+                        if (map.mapSquares[x, y].SeenByPlayer && map.mapSquares[x, y].Terrain == MapTerrain.ClosedLock && !AutoCanUnlock(d, p, lvl, new Point(x, y))) { locks = true; break; }
                 AutoStop(autoMode == AutoMode.Explore
                     ? (locks ? "Nothing left to explore that isn't behind a locked door." : "Nothing left to explore.")
                     : "No known way to the elevator.");
@@ -207,5 +207,12 @@ namespace RogueBasin
             bool moved = d.PCMove(s.x - start.x, s.y - start.y);
             return moved;
         }
-    }
+    
+        // A known lock the player holds the key cards for is walked into (bumping opens it).
+        static bool AutoCanUnlock(Dungeon d, Player p, int lvl, Point pt)
+        {
+            var ls = d.LocksAtLocation(lvl, pt);
+            return ls.Count > 0 && (d.AllLocksOpen || ls.All(l => l.IsOpen() || (l is Locks.SimpleLockedDoor && ((Locks.SimpleLockedDoor)l).CanDoorBeOpenedWithClues(p))));
+        }
+}
 }

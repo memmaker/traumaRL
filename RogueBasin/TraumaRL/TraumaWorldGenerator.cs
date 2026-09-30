@@ -21,7 +21,7 @@ namespace TraumaRL
         List<int> allReplaceableVaults;
 
         //For development, skip making most of the levels
-        bool quickLevelGen = true;
+        bool quickLevelGen = false;
 
         ConnectivityMap levelLinks;
         List<int> gameLevels;
@@ -498,7 +498,9 @@ DecorationFeatureDetails.DecorationFeatures.Bin
 
             //var standardGameLevels = gameLevels.Except(new List<int> { medicalLevel, storageLevel, reactorLevel, flightDeck, arcologyLevel, scienceLevel, computerCoreLevel, bridgeLevel, commercialLevel });
 
-            var standardGameLevels = gameLevels.Except(new List<int> { medicalLevel });
+            //RVIP: full generation must not overwrite the special levels generated above
+            var standardGameLevels = quickLevelGen ? gameLevels.Except(new List<int> { medicalLevel }) :
+                gameLevels.Except(new List<int> { medicalLevel, storageLevel, reactorLevel, flightDeck, arcologyLevel, scienceLevel, computerCoreLevel, bridgeLevel, commercialLevel });
 
             foreach (var level in standardGameLevels)
             {

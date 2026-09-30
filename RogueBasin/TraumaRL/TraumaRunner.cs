@@ -40,6 +40,7 @@ namespace TraumaRL
                 {
                     retry = false;
                     LogFile.Log.LogEntryDebug("Failed to create dungeon : " + ex.Message, LogDebugLevel.High);
+                    System.Console.Error.WriteLine("RVIP gen retry: " + ex);
                     if (failFast)
                     {
                         throw ex;

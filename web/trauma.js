@@ -101,8 +101,8 @@ async function main() {
 	worker = new Worker('worker.js', { type: 'module' });
 	worker.onmessage = e => {
 		const m = e.data;
-		if (m.t === 'screen') { window.trauma.running = true; scr = m.cells; info = JSON.parse(m.info); if (!dirty) { dirty = true; requestAnimationFrame(draw); } }
-		else if (m.t === 'started') { $('status').textContent = ''; }
+		if (m.t === 'screen') { if (!window.trauma.running) $('status').textContent = ''; window.trauma.running = true; scr = m.cells; info = JSON.parse(m.info); if (!dirty) { dirty = true; requestAnimationFrame(draw); } }
+		else if (m.t === 'started') { $('status').textContent = 'Generating the station…'; }
 		else if (m.t === 'wait') { window.trauma.running = true; }
 		else if (m.t === 'crash') { $('status').textContent = 'The game crashed: ' + m.msg; console.error(m.msg); }
 		else if (m.t === 'quit' || m.t === 'exit') { $('status').textContent = 'The game has ended. Reload to play again.'; }
