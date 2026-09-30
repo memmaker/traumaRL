@@ -2099,6 +2099,7 @@ namespace RogueBasin
             {
                 if (!player.IsEffectActive(typeof(PlayerEffects.BioProtect)))
                 {
+                    RvipInput.Killer = null; //RVIP 9: environment
                     player.ApplyDamageToPlayerHitpoints(5);
                 }
             }
@@ -4351,6 +4352,7 @@ namespace RogueBasin
             */
             //RunMainLoop = false;
             RvipSave.Delete(); //RVIP: roguelike, one life
+            RvipInput.Beacon(playerWon, playerQuit); //RVIP 9: before the end screens' key waits
             if (!playerQuit) RvipInput.Sound(playerWon ? "win" : "death"); //RVIP 6
             EndOfGameMechanics(playerWon, playerQuit);
         }

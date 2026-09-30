@@ -2466,6 +2466,7 @@ namespace RogueBasin
                 //bypasses cover etc.
                 //var modifiedDamaged = (int)Math.Floor(CalculateDamageModifierForAttacksOnPlayer(this) * damage);
 
+                RvipInput.Killer = null; //RVIP 9: own damage
                 ApplyDamageToPlayer(damage);
 
                 //Hitpoints -= damage;

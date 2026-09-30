@@ -34,6 +34,7 @@ const imports = {
 	/* the save file: the page keeps it in IndexedDB */
 	storeFile(name, view) { postMessage({ t: 'store', name, data: view.slice() }); },
 	sound(name) { postMessage({ t: 'sound', name }); },
+	beacon(q) { postMessage({ t: 'beacon', q }); }, /* RVIP 9: the game builds the report, the page only sends it */
 	deleteFile(name) { postMessage({ t: 'delete', name }); },
 	initialFile(name) { return files[name] || null; },
 };

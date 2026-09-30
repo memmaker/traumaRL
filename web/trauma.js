@@ -229,7 +229,7 @@ function loadFace(n) {
 async function makeWM() {
 	try {
 		const d = await getFile('web-layout.json');
-		if (d) { const s = JSON.parse(new TextDecoder().decode(d)); L = { wm: s.wm || null, face: s.face || '', sound: !!s.sound }; }
+		if (d) { const s = JSON.parse(new TextDecoder().decode(d)); L = { wm: s.wm || null, face: s.face || '', sound: !!s.sound, name: s.name }; }
 	} catch (_) { }
 	loadFace(L.face);
 	$('chk-sound').checked = L.sound; /* off by default */
@@ -305,13 +305,18 @@ async function main() {
 		else if (m.t === 'started') app.status(sav ? 'Loading the saved run…' : 'Generating the station…');
 		else if (m.t === 'crash') { app.crashed(new Error(m.msg.split('\n')[0])); console.error(m.msg); }
 		else if (m.t === 'store') putFile(m.name, m.data).then(() => { app.status(''); if (onStored) onStored(); }).catch(err => app.status('Saving to browser storage (IndexedDB) failed: ' + err, true));
+		else if (m.t === 'beacon') { if (window.RvipWM && RvipWM.report) RvipWM.report(m.q); else fetch('/roguelikes/beacon?' + m.q, { keepalive: true, mode: 'no-cors' }).catch(function () {}); }
 		else if (m.t === 'sound') { if (L.sound) RVIPSound.play([m.name], 0.5); }
 		else if (m.t === 'delete') delFile(m.name).catch(() => {});
 		else if (m.t === 'quit' || m.t === 'exit') gameOver();
 	};
 	const files = {}, sav = await getFile(SAV).catch(() => null);
 	if (sav) files[SAV] = new Uint8Array(sav);
-	worker.postMessage({ t: 'init', ring: ring.buffer, files, args: new URLSearchParams(location.search).has('rviplocks') ? ['rviplocks'] : [] });
+	/* RVIP 9: the game never asks a name (always "Dave"): ask once for the graveyard, kept in web-layout.json; Cancel = no name */
+	if (typeof L.name !== 'string') { const n = window.prompt('Your name for the graveyard and leaderboard (Cancel: none):', ''); L.name = (n || '').trim().slice(0, 30); saveLayout(true); }
+	const args = new URLSearchParams(location.search).has('rviplocks') ? ['rviplocks'] : [];
+	if (L.name) args.push('name=' + L.name);
+	worker.postMessage({ t: 'init', ring: ring.buffer, files, args });
 	window.addEventListener('keydown', onKey);
 	document.addEventListener('visibilitychange', () => { if (document.hidden) requestSave(); });
 	window.addEventListener('beforeunload', e => {

@@ -2,6 +2,25 @@
 
 ## RVIP progress
 
+- **Stage 9 (Graveyard and leaderboard): done in the cloud, deploy pending locally.**
+  - Hook: `Dungeon.EndOfGame(won, quit)` (every end: death via `PlayerDeath`, quit via `Q`→y, win via
+    `Features.EscapePod.PlayerInteraction`) calls `RvipInput.Beacon` before the end screens' key waits.
+    Fields: `g=traumarl`, `ev` (win|death|quit), `name` (page asks once with `window.prompt`, kept in
+    `web-layout.json` `name`, passed as worker arg `name=`; the game itself always says "Dave"),
+    `killer` = `SingleDescription` of the last monster in `Monster.AttackPlayer` (reset on self/Arcology
+    damage → omitted), `depth` = `LocationLevel+1`, `score` = end-screen kill points (`GetKillRecord().killScore`),
+    `turns` = `Player.TurnCount`. No `lvl` (no character level). C# → worker `beacon` → page `RvipWM.report`.
+  - Killer art: roguelikes `killers/make.py traumarl()` → `killers/traumarl/*.png` (19 robots, sprite from
+    `TraumaSprites.png`, white → `RepresentationColor`, magenta → black, 2x nearest to the contract's 32 px).
+    Server needs no entry (games = site dirs).
+  - Tested: native `ENDRUN=win|death` (Headless: real escape pod / real monster hit) and `SCRIPT=Qy` print
+    `BEACON …`; Chromium (temporary `end=` arg, reverted): quit, death (`killer=Heavy turret`), win each
+    → 503 kept in outbox with id/at → 204 + `RvipWM.flush()` → sent, outbox empty.
+  - Deploy: stage 7 steps 1+2 (game build + deploy, roguelikes merge + `./deploy.sh`). Checks:
+    `curl -s https://ruzzoli.de/roguelikes/traumarl/trauma.js | grep -c beacon` (1),
+    `curl -s https://ruzzoli.de/roguelikes/killers/traumarl/heavy-turret.png | md5; md5 -q ~/Games/roguelikes-index/killers/traumarl/heavy-turret.png`;
+    play, quit with `Q` `y` in a real browser → run shows on graveyard.html after the stats job. Never touch the server's win files.
+
 - **Stage 8 (Shrine): done in the cloud, deploy pending locally.**
   - roguelikes `shrine/traumarl.html` (template prospector.html), card Info button, tree ✦; game `#bar h1` title links to the shrine.
   - Research: roguetemple.com, forums.roguetemple.com, shroomarts.blogspot.com blocked from the cloud; facts from

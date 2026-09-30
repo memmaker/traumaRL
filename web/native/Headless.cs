@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 namespace RogueBasin{
 	class Headless : IRvipBackend{
-		Random rng; int left; int saveTries; bool savedNow; DateTime started = DateTime.UtcNow; Queue<string> script = new Queue<string>();
+		Random rng; int left; int saveTries; bool savedNow, endDone; DateTime started = DateTime.UtcNow; Queue<string> script = new Queue<string>();
 		public int[] last; public string lastInfo = ""; public int presents;
 		static readonly string pool = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>.,;:?/!@#$%^&*()-=+[]";
 		static readonly string Pool = Environment.GetEnvironmentVariable("NOQUIT") != null ? pool.Replace("Q", "") : pool; // NOQUIT=1: no Q (quit) key
@@ -29,6 +29,12 @@ namespace RogueBasin{
 		}
 		public string WaitKey(int ms){
 			string k;
+			//RVIP 9 test: ENDRUN=win -> the escape pod's own PlayerInteraction (the won-run path); ENDRUN=death -> a real monster hits for 999
+			string er = Environment.GetEnvironmentVariable("ENDRUN");
+			if(er != null && Game.Base != null && Game.Base.RvipAtCmd && !endDone){ endDone = true; var d = Game.Dungeon;
+				if(er == "win"){ var pod = new Features.EscapePod(); pod.PlayerInteraction(d.Player); }
+				else if(er == "death"){ var m = d.Monsters.First(x => !(x is Creatures.ComputerNode) && !(x is Creatures.Friend)); Console.WriteLine("HIT BY " + m.SingleDescription); d.Player.Shield = 0; d.Player.ShieldWasDamagedThisTurn = false; m.AttackPlayer(d.Player, 999); }
+			}
 			if(script.Count > 0){ k = script.Dequeue(); if(k == "_") return ""; } // '_' = no key this tick (lets explore run)
 			else if(left-- > 0) k = rng.Next(4) == 0 ? specials[rng.Next(specials.Length)] + "\t\t" : K(Pool[rng.Next(Pool.Length)]);
 			else if(Environment.GetEnvironmentVariable("SAVE") != null && saveTries++ < 400 && !savedNow){ // save test: get back to the map, then ask for a save
@@ -89,6 +95,7 @@ namespace RogueBasin{
 			for(int x = 0; x < m.width; x++) for(int y = 0; y < m.height; y++){ h = h * 31 + (int)m.mapSquares[x, y].Terrain; h = h * 3 + (m.mapSquares[x, y].SeenByPlayer ? 1 : 0); }
 			return "fp " + p.Name + " L" + p.LocationLevel + " " + p.LocationMap + " hp" + p.Hitpoints + " mon" + d.Monsters.Count + " items" + d.Items.Count + " locks" + d.Locks.Count + " map" + h.ToString("x");
 		}
+		public void Beacon(string q){ Console.WriteLine("BEACON " + q); }
 		public void Sound(string name){ if(Environment.GetEnvironmentVariable("SOUNDS") != null) Console.WriteLine("SOUND " + name); }
 		public void FileChanged(string name){ Console.WriteLine("FILE " + name + (File.Exists(name) ? " " + new FileInfo(name).Length : " deleted")); }
 		public void Finish(int rc){

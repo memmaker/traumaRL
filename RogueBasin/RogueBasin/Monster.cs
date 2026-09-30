@@ -568,6 +568,7 @@ namespace RogueBasin
 
                 var modifiedDamaged = (int)Math.Floor(player.CalculateDamageModifierForAttacksOnPlayer(this) * damage);
 
+                RvipInput.Killer = SingleDescription; //RVIP 9: beacon killer
                 player.ApplyDamageToPlayer(modifiedDamaged);
 
                 //Is the player dead, if so kill it?

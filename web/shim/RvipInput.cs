@@ -12,6 +12,7 @@ namespace RogueBasin{
 		void Quit();
 		void FileChanged(string name); //a persistent file was written or deleted (web: mirror to IndexedDB)
 		void Sound(string name); //RVIP 6: a game action names its sound effect (the page plays it if Sound is on)
+		void Beacon(string query); //RVIP 9: report a finished run (graveyard/leaderboard); the page sends it through the outbox
 	}
 	[System.Serializable] public class RvipKey{
 		public string Code, KeyName; public bool Shift, Ctrl, Alt;
@@ -81,5 +82,25 @@ namespace RogueBasin{
 		}
 		public static void Sleep(int ms){ Backend.Sleep(ms); }
 		public static void Sound(string name){ if(Backend != null) Backend.Sound(name); }
+		public static string PlayerName = ""; //RVIP 9: asked once by the page (the game itself always says "Dave")
+		public static string Killer; //RVIP 9: SingleDescription of the last monster that hurt the player (Monster.AttackPlayer); null = own/environment damage
+		//RVIP 9: one report per finished run, from Dungeon.EndOfGame (death, escape-pod win, quit). Score = the end screen's kill points.
+		public static void Beacon(bool won, bool quit){
+			try{
+				var d = Game.Dungeon; var p = d.Player;
+				string ev = won ? "win" : quit ? "quit" : "death";
+				string q = "g=traumarl&ev=" + ev;
+				if(PlayerName != "") q += "&name=" + Uri.EscapeDataString(PlayerName);
+				if(ev == "death" && !string.IsNullOrEmpty(Killer)){
+					string k = Killer.Trim();
+					foreach(string a in new[]{"a ","an ","the "}) if(k.ToLowerInvariant().StartsWith(a)){ k = k.Substring(a.Length); break; }
+					q += "&killer=" + Uri.EscapeDataString(k);
+				}
+				q += "&depth=" + (p.LocationLevel + 1) + "&score=" + d.GetKillRecord().killScore + "&turns=" + p.TurnCount;
+				if(Backend != null) Backend.Beacon(q);
+			}
+			catch(Exception){}
+			Killer = null;
+		}
 	}
 }
