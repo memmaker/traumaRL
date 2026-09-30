@@ -1172,7 +1172,7 @@ DecorationFeatureDetails.DecorationFeatures.Bin
             if (manager.GetDoorsForEdge(connectionCandidate).Count() > 0)
             {
                 //Try another edge
-                var possibleEdges = criticalPath.Shuffle();
+                var possibleEdges = RogueBasin.ShuffleExtension.Shuffle(criticalPath);
                 Connection foundEdge = null;
                 foreach (var edge in possibleEdges)
                 {
@@ -1245,7 +1245,7 @@ DecorationFeatureDetails.DecorationFeatures.Bin
 
             while (roomsToPlaceMonsters.Count() < objectsToPlace)
             {
-                var shuffledRooms = expandedAllowedRoomForClues.Shuffle();
+                var shuffledRooms = RogueBasin.ShuffleExtension.Shuffle(expandedAllowedRoomForClues);
                 foreach (var room in shuffledRooms)
                 {
                     roomsToPlaceMonsters.Add(room);
@@ -1998,7 +1998,7 @@ DecorationFeatureDetails.DecorationFeatures.Bin
                 allWalkablePoints.AddRange(Game.Dungeon.GetWalkablePointsFromSet(levelForRandomRoom, allPossiblePoints));
             }
 
-            return new Tuple<int, IEnumerable<RogueBasin.Point>>(levelForRandomRoom, allWalkablePoints.Shuffle());
+            return new Tuple<int, IEnumerable<RogueBasin.Point>>(levelForRandomRoom, RogueBasin.ShuffleExtension.Shuffle(allWalkablePoints));
         }
 
         private IEnumerable<int> GetAllRoomsToPlaceClue(MapInfo mapInfo, Clue clue, bool filterCorridors, bool includeVaults)
@@ -2044,7 +2044,7 @@ DecorationFeatureDetails.DecorationFeatures.Bin
                 allWalkablePoints.AddRange(Game.Dungeon.GetWalkablePointsFromSet(levelForRandomRoom, allPossiblePoints));
             }
 
-            return new Tuple<int, IEnumerable<RogueBasin.Point>>(levelForRandomRoom, allWalkablePoints.Shuffle());
+            return new Tuple<int, IEnumerable<RogueBasin.Point>>(levelForRandomRoom, RogueBasin.ShuffleExtension.Shuffle(allWalkablePoints));
         }
 
         private Tuple<int, IEnumerable<RogueBasin.Point>> GetAllWalkablePointsInRoomsBoundariesOnly(MapInfo mapInfo, IEnumerable<int> rooms, bool filterCorridors, bool includeVaults)
@@ -2070,7 +2070,7 @@ DecorationFeatureDetails.DecorationFeatures.Bin
                 allWalkablePoints.AddRange(Game.Dungeon.GetWalkablePointsFromSet(levelForRandomRoom, allPossiblePoints));
             }
 
-            return new Tuple<int, IEnumerable<RogueBasin.Point>>(levelForRandomRoom, allWalkablePoints.Shuffle());
+            return new Tuple<int, IEnumerable<RogueBasin.Point>>(levelForRandomRoom, RogueBasin.ShuffleExtension.Shuffle(allWalkablePoints));
         }
 
 
@@ -2098,7 +2098,7 @@ DecorationFeatureDetails.DecorationFeatures.Bin
                 allWalkablePoints.AddRange(Game.Dungeon.GetWalkablePointsFromSet(levelForRandomRoom, allPossiblePoints));
             }
 
-            return new Tuple<int, IEnumerable<RogueBasin.Point>>(levelForRandomRoom, allWalkablePoints.Shuffle());
+            return new Tuple<int, IEnumerable<RogueBasin.Point>>(levelForRandomRoom, RogueBasin.ShuffleExtension.Shuffle(allWalkablePoints));
         }
 
         private Tuple<int, IEnumerable<RogueBasin.Point>> GetAllWalkablePointsToPlaceObjective(MapInfo mapInfo, Objective clue, bool filterCorridors, bool includeVaults)
@@ -3243,7 +3243,7 @@ DecorationFeatureDetails.DecorationFeatures.Bin
 
         Connection AddRoomToRandomOpenDoor(TemplatedMapGenerator gen, RoomTemplate templateToPlace, RoomTemplate corridorTemplate, int distanceFromDoor)
         {
-            var doorsToTry = gen.PotentialDoors.Shuffle();
+            var doorsToTry = RogueBasin.ShuffleExtension.Shuffle(gen.PotentialDoors);
             
             foreach(var door in doorsToTry) {
                 try {

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <!-- RVIP web build: .NET 10 browser-wasm (Mono interpreter), runs inside a module Web Worker.
+       Compiles the TraumaRL game (RogueBasin core + GraphMap + TraumaRL) with managed shims for
+       libtcod-net, SdlDotNet and System.Windows.Forms (web/shim). The compile list mirrors the
+       VS2013 csprojs (they list files explicitly; some .cs files on disk are not built). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>TraumaWeb</AssemblyName>
+    <RootNamespace>RogueBasin</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DefineConstants>$(DefineConstants);WEB</DefineConstants>
+    <NoWarn>$(NoWarn);CS0162;CS0168;CS0219;CS0414;CS0649;CS0169;CS0618;CS0108;CS0114;NU1701;CS8981;SYSLIB0011;SYSLIB0050;SYSLIB0051;CA1416;CS0659;CS0661;CS0660;CS1998;CS0067;CA2200</NoWarn>
+    <StartupObject>RogueBasin.WebMain</StartupObject>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- no trimming: ILLink 10 crashes (IL1012, KeyNotFound in CompilerGeneratedState) analysing QuickGraph net4 FibonacciHeap iterators -->
+    <PublishTrimmed>false</PublishTrimmed>
+    <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+    <WasmEnableThreads>false</WasmEnableThreads>
+    <CompressionEnabled>false</CompressionEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <Import Project="../sources.props" />
+  <ItemGroup>
+    <Compile Include="WebBackend.cs" />
+    <EmbeddedResource Include="../config.txt" LogicalName="data/config.txt" />
+  </ItemGroup>
+</Project>

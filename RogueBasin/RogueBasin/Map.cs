@@ -464,7 +464,7 @@ namespace RogueBasin
             {
                 for (int j = 0; j < height; j++)
                 {
-                    newMap.mapSquares[i, j] = mapSquares[i, j].Clone();
+                    RvipArray.Set(newMap.mapSquares, i, j, mapSquares[i, j].Clone());
                     newMap.roomIdMap[i, j] = roomIdMap[i, j];
                 }
             }
